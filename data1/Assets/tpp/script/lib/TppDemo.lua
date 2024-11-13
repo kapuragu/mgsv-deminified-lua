@@ -10,29 +10,72 @@ local IsPlayingDemoId=DemoDaemon.IsPlayingDemoId
 local IsDemoPaused=DemoDaemon.IsDemoPaused
 local GetPlayingDemoId=DemoDaemon.GetPlayingDemoId
 local lastPlayTooLongAgoTime=((5*24)*60)*60--5 days?
-this.MOVET_TO_POSITION_RESULT={[StrCode32"success"]="success",[StrCode32"failure"]="failure",[StrCode32"timeout"]="timeout"}
+this.MOVET_TO_POSITION_RESULT={
+  [StrCode32"success"]="success",
+  [StrCode32"failure"]="failure",
+  [StrCode32"timeout"]="timeout"
+}
 this.messageExecTable={}
 function this.Messages()
   return Tpp.StrCode32Table{
     Player={
-      {msg="DemoSkipped",func=this.OnDemoSkipAndBlockLoadEnd,option={isExecDemoPlaying=true,isExecMissionClear=true,isExecGameOver=true}},
-      {msg="DemoSkipStart",func=this.EnableWaitBlockLoadOnDemoSkip,option={isExecDemoPlaying=true,isExecMissionClear=true,isExecGameOver=true}},
-      {msg="FinishInterpCameraToDemo",func=this.OnEndGameCameraInterp,option={isExecMissionClear=true,isExecGameOver=true}},
-      {msg="FinishMovingToPosition",sender="DemoStartMoveToPosition",
+      {
+        msg="DemoSkipped",
+        func=this.OnDemoSkipAndBlockLoadEnd,
+        option={isExecDemoPlaying=true,isExecMissionClear=true,isExecGameOver=true}
+      },
+      {
+        msg="DemoSkipStart",
+        func=this.EnableWaitBlockLoadOnDemoSkip,
+        option={isExecDemoPlaying=true,isExecMissionClear=true,isExecGameOver=true}
+      },
+      {
+        msg="FinishInterpCameraToDemo",
+        func=this.OnEndGameCameraInterp,
+        option={isExecMissionClear=true,isExecGameOver=true}
+      },
+      {
+        msg="FinishMovingToPosition",
+        sender="DemoStartMoveToPosition",
         func=function(str32Name,moveResultStr32)
           local moveResult=this.MOVET_TO_POSITION_RESULT[moveResultStr32]
           mvars.dem_waitingMoveToPosition=nil
         end,
-        option={isExecMissionClear=true,isExecGameOver=true}}
+        option={isExecMissionClear=true,isExecGameOver=true}
+      }
     },
     Demo={
-      {msg="PlayInit",func=this._OnDemoInit,option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}},
-      {msg="Play",func=this._OnDemoPlay,option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}},
-      {msg="Finish",func=this._OnDemoEnd,option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}},
-      {msg="Interrupt",func=this._OnDemoInterrupt,option={isExecMissionClear=true,isExecDemoPlaying=true}},
-      {msg="Skip",func=this._OnDemoSkip,option={isExecMissionClear=true,isExecDemoPlaying=true}},
-      {msg="Disable",func=this._OnDemoDisable},
-      {msg="StartMissionTelop",
+      {
+        msg="PlayInit",
+        func=this._OnDemoInit,
+        option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}
+      },
+      {
+        msg="Play",
+        func=this._OnDemoPlay,
+        option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}
+      },
+      {
+        msg="Finish",
+        func=this._OnDemoEnd,
+        option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}
+      },
+      {
+        msg="Interrupt",
+        func=this._OnDemoInterrupt,
+        option={isExecMissionClear=true,isExecDemoPlaying=true}
+      },
+      {
+        msg="Skip",
+        func=this._OnDemoSkip,
+        option={isExecMissionClear=true,isExecDemoPlaying=true}
+      },
+      {
+        msg="Disable",
+        func=this._OnDemoDisable
+      },
+      {
+        msg="StartMissionTelop",
         func=function()
           if mvars.dm_doneStartMissionTelop then
             return
@@ -41,35 +84,51 @@ function this.Messages()
           TppUI.StartMissionTelop(missionCodeForClear)
           mvars.dm_doneStartMissionTelop=true
         end,
-        option={isExecDemoPlaying=true,isExecMissionClear=true}},
-      {msg="StartCastTelopLeft",
+        option={isExecDemoPlaying=true,isExecMissionClear=true}
+      },
+      {
+        msg="StartCastTelopLeft",
         func=function()
           TppTelop.StartCastTelop"LEFT_START"
         end,
-        option={isExecDemoPlaying=true,isExecMissionClear=true}},
-      {msg="StartCastTelopRight",
+        option={isExecDemoPlaying=true,isExecMissionClear=true}
+      },
+      {
+        msg="StartCastTelopRight",
         func=function()
           TppTelop.StartCastTelop"RIGHT_START"
         end,
-        option={isExecDemoPlaying=true,isExecMissionClear=true}},
+        option={isExecDemoPlaying=true,isExecMissionClear=true}
+      },
       nil
     },
     UI={
-      {msg="EndFadeOut",sender="DemoPlayFadeIn",func=function(n,demoIdStr32)
-        local demoName=mvars.dem_invScdDemolist[demoIdStr32]
-      end,
-      option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}},
-      {msg="DemoPauseSkip",func=this.FadeOutOnSkip,option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}}
+      {
+        msg="EndFadeOut",
+        sender="DemoPlayFadeIn",
+        func=function(n,demoIdStr32)
+          local demoName=mvars.dem_invScdDemolist[demoIdStr32]
+        end,
+        option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}
+      },
+      {
+        msg="DemoPauseSkip",
+        func=this.FadeOutOnSkip,
+        option={isExecMissionClear=true,isExecDemoPlaying=true,isExecGameOver=true}
+      }
     },
     Timer={
-      {msg="Finish",sender="p31_080110_000_showLocationTelop",
+      {
+        msg="Finish",
+        sender="p31_080110_000_showLocationTelop",
         func=function()
           TppUiCommand.RegistInfoTypingText("location",1)
           TppUiCommand.RegistInfoTypingText("cpname",2,"platform_isolation")
           TppUiCommand.RegistInfoTypingText("disptime",2)
           TppUiCommand.ShowInfoTypingText()
         end,
-        option={isExecDemoPlaying=true}}
+        option={isExecDemoPlaying=true}
+      }
     }
   }
 end
@@ -342,8 +401,8 @@ function this.EnableGameStatus(target,_except)
   local except=_except or{}
   local overrideGameStatus=TppUI.GetOverrideGameStatus()
   if overrideGameStatus then
-    for a,n in pairs(overrideGameStatus)do
-      except[a]=n
+    for gameStatusName,gameStatusValue in pairs(overrideGameStatus)do
+      except[gameStatusName]=gameStatusValue
     end
   end
   Tpp.SetGameStatus{target=target,except=except,enable=true,scriptName="TppDemo.lua"}
@@ -401,8 +460,8 @@ function this.GetDemoStartPlayerPosition(demoName)
   if(demoId==nil)then
     return
   end
-  local n,position,rotQuat=DemoDaemon.GetStartPosition(demoId,"Player")
-  if not n then
+  local ret,position,rotQuat=DemoDaemon.GetStartPosition(demoId,"Player")
+  if not ret then
     return
   end
   local rotation=Tpp.GetRotationY(rotQuat)
@@ -430,23 +489,23 @@ function this.PlayOpening(demoFuncs,_demoFlags)
     end
   end
   if pos then
-    local e=-rot:Rotate(adjustPos)
-    demoPosition=e+pos
+    local adjustedPos=-rot:Rotate(adjustPos)
+    demoPosition=adjustedPos+pos
     demoRotQuat=rot
   else
-    local e=-rotYQuat:Rotate(adjustPos)
-    demoPosition=e+playerPosition
+    local adjustedPos=-rotYQuat:Rotate(adjustPos)
+    demoPosition=adjustedPos+playerPosition
     demoRotQuat=rotYQuat
   end
   TppMusicManager.StopMusicPlayer(1)
   DemoDaemon.SetDemoTransform(demoId,demoRotQuat,demoPosition)
   this.Play(demoName,demoFuncs,demoFlags)
 end
-function this.PlayGetIntelDemo(demoFuncs,identifier,key,_demoFlags,t)
+function this.PlayGetIntelDemo(demoFuncs,identifier,key,_demoFlags,isAlt)
   local demoFlags=_demoFlags or{}
   demoFlags.isSnakeOnly=false
   local demoId,demoId2
-  if t then
+  if isAlt then
     demoId,demoId2="p31_010026","p31_010026_001"
   else
     demoId,demoId2="p31_010025","p31_010025_001"
@@ -516,8 +575,8 @@ function this.ExecuteBackGroundLoad(demoId)
     this.SetPlayerWarpAndPause(mvars.dem_reservedDemoLoadPosition)
     mvars.dem_DoneBackGroundLoading=true
   else
-    local a,position,rotQuat=DemoDaemon.GetStartPosition(demoId,"Player")
-    if not a then
+    local ret,position,rotQuat=DemoDaemon.GetStartPosition(demoId,"Player")
+    if not ret then
       mvars.dem_DoneBackGroundLoading=true
       return
     end
@@ -560,49 +619,49 @@ function this.ClearReserveInTheBackGround()
   mvars.dem_reservedDemoId=nil
   mvars.dem_reservedDemoLoadPosition=nil
 end
-function this.CheckEventDemoDoor(doorId,n,e)
+function this.CheckEventDemoDoor(doorId,overridePosition,overrideRange)
   local position=TppPlayer.GetPosition()
   local range=30
   if doorId==nil then
     return false
   end
-  if Tpp.IsTypeTable(n)then
-    position=n
-  elseif n==nil then
+  if Tpp.IsTypeTable(overridePosition)then
+    position=overridePosition
+  elseif overridePosition==nil then
   end
-  if Tpp.IsTypeNumber(e)and e>0 then
-    range=e
-  elseif e==nil then
+  if Tpp.IsTypeNumber(overrideRange)and overrideRange>0 then
+    range=overrideRange
+  elseif overrideRange==nil then
   end
   local isNgIcon=0
-  local i,l=0,1
+  local isNgIconFalse,isNgIconTrue=0,1
   local isNotAlert=Tpp.IsNotAlert()
-  local a=TppEnemy.IsActiveSoldierInRange(position,range)
-  local e
-  if isNotAlert==true and a==false then
-    isNgIcon=i
-    e=true
+  local isActiveSoldierInRange=TppEnemy.IsActiveSoldierInRange(position,range)
+  local ret
+  if isNotAlert==true and isActiveSoldierInRange==false then
+    isNgIcon=isNgIconFalse
+    ret=true
   else
-    isNgIcon=l
-    e=false
+    isNgIcon=isNgIconTrue
+    ret=false
   end
   Player.SetEventLockDoorIcon{doorId=doorId,isNgIcon=isNgIcon}
-  return e,isNotAlert,(not a)
+  return ret,isNotAlert,(not isActiveSoldierInRange)
 end
-function this.SpecifyIgnoreNpcDisable(e)
-  local n
-  if Tpp.IsTypeString(e)then
-    n={e}
-  elseif IsTypeTable(e)then
-    n=e
+function this.SpecifyIgnoreNpcDisable(_npcDisableList)
+  local npcDisableList
+  if Tpp.IsTypeString(_npcDisableList)then
+    npcDisableList={_npcDisableList}
+  elseif IsTypeTable(_npcDisableList)then
+    npcDisableList=_npcDisableList
   else
     return
   end
   mvars.dem_npcDisableList=mvars.dem_npcDisableList or{}
-  for n,e in ipairs(n)do
-    local n=TppEnemy.SetIgnoreDisableNpc(e,true)
-    if n then
-      table.insert(mvars.dem_npcDisableList,e)
+  for n,npcName in ipairs(npcDisableList)do
+    local isSetIgnoreDisableNpc=TppEnemy.SetIgnoreDisableNpc(npcName,true)
+    if isSetIgnoreDisableNpc then
+      table.insert(mvars.dem_npcDisableList,npcName)
     end
   end
 end
@@ -610,8 +669,8 @@ function this.ClearIgnoreNpcDisableOnDemoEnd()
   if not mvars.dem_npcDisableList then
     return
   end
-  for n,e in ipairs(mvars.dem_npcDisableList)do
-    TppEnemy.SetIgnoreDisableNpc(e,false)
+  for n,npcName in ipairs(mvars.dem_npcDisableList)do
+    TppEnemy.SetIgnoreDisableNpc(npcName,false)
   end
   mvars.dem_npcDisableList=nil
 end
@@ -686,14 +745,14 @@ end
 function this.FadeOutOnSkip()
   TppUI.FadeOut(TppUI.FADE_SPEED.FADE_MOMENT)
 end
-function this.OnDemoPlay(demoName,t)
+function this.OnDemoPlay(demoName,scdDemoID)
   if mvars.dem_playedList[demoName]==nil then
     return
   end
   local demoFlags=mvars.dem_demoFlags[demoName]or{}
   if not demoFlags.startNoFadeIn then
     local fadeSpeed=demoFlags.fadeSpeed or TppUI.FADE_SPEED.FADE_NORMALSPEED
-    TppUI.FadeIn(fadeSpeed,"DemoPlayFadeIn",t)
+    TppUI.FadeIn(fadeSpeed,"DemoPlayFadeIn",scdDemoID)
   end
   if demoFlags.useDemoBlock then
     mvars.dem_startedDemoBlockDemo=false
@@ -773,10 +832,10 @@ function this.OnDemoSkipAndBlockLoadEnd()
     mvars.dem_enableWaitBlockLoadOnDemoSkip=nil
   end
 end
-function this.DoOnEndMessage(demoName,r,exceptGameStatus,t,a)
-  if(not r)then
+function this.DoOnEndMessage(demoName,finishFadeOut,exceptGameStatus,isInGame,isSkipped)
+  if(not finishFadeOut)then
     local skipFadeIn=true
-    if t and(not a)then
+    if isInGame and(not isSkipped)then
       skipFadeIn=false
     end
     if skipFadeIn then
@@ -944,13 +1003,13 @@ function this.ProcessFinishWaitRequestInfo()
     end
   end
 end
-function this.CanFinishPlay(demoId,t)
+function this.CanFinishPlay(demoId,waitCheckFuncs)
   local canFinishPlay=true
-  for funcName,r in pairs(t)do
-    if r==false then
-      local e=this.FINISH_WAIT_CHECK_FUNC[funcName](demoId)
-      if e then
-        t[funcName]=true
+  for funcName,isDoCheck in pairs(waitCheckFuncs)do
+    if isDoCheck==false then
+      local isFinishedWaitCheck=this.FINISH_WAIT_CHECK_FUNC[funcName](demoId)
+      if isFinishedWaitCheck then
+        waitCheckFuncs[funcName]=true
       else
         canFinishPlay=false
       end
@@ -1064,94 +1123,94 @@ this.mtbsPriorityFuncList={
     if this.IsPlayedMBEventDemo"DdogComeToGet"then
       return false
     end
-    local n=TppStory.GetClearedMissionCount{10036,10043,10033}>=2
-    local t=TppBuddyService.DidObtainBuddyType(BuddyType.DOG)
-    local a=not TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
-    local e=TppStory.IsNowOccurringElapsedMission(TppDefine.ELAPSED_MISSION_EVENT.D_DOG_COME_TO_GET)
-    return((n and t)and a)and e
+    local isCleardTwoAfghFlagMissions=TppStory.GetClearedMissionCount{10036,10043,10033}>=2
+    local isObtainBuddyDog=TppBuddyService.DidObtainBuddyType(BuddyType.DOG)
+    local isNotCanSortieBuddyDog=not TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
+    local isNowOccuringDDogComeToGet=TppStory.IsNowOccurringElapsedMission(TppDefine.ELAPSED_MISSION_EVENT.D_DOG_COME_TO_GET)
+    return((isCleardTwoAfghFlagMissions and isObtainBuddyDog)and isNotCanSortieBuddyDog)and isNowOccuringDDogComeToGet
   end,
   DdogGoWithMe=function()
-    local a=TppStory.GetClearedMissionCount{10041,10044,10052,10054}>=3
-    local n=not TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
-    local e=TppStory.IsNowOccurringElapsedMission(TppDefine.ELAPSED_MISSION_EVENT.D_DOG_GO_WITH_ME)
-    return(a and n)and e
+    local isCleardThreeAfghFlagMissions=TppStory.GetClearedMissionCount{10041,10044,10052,10054}>=3
+    local isNotCanSortieBuddyDog=not TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
+    local isNowOccuringDDogGoWithMe=TppStory.IsNowOccurringElapsedMission(TppDefine.ELAPSED_MISSION_EVENT.D_DOG_GO_WITH_ME)
+    return(isCleardThreeAfghFlagMissions and isNotCanSortieBuddyDog)and isNowOccuringDDogGoWithMe
   end,
   LongTimeNoSee_DDSoldier=function()
-    local n=TppStory.IsMissionCleard(10030)
-    local e=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
-    return n and e
+    local isCleardToMB=TppStory.IsMissionCleard(10030)
+    local isElapsedTimeSinceLastPlayTooLongAgo=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
+    return isCleardToMB and isElapsedTimeSinceLastPlayTooLongAgo
   end,
   LongTimeNoSee_DdogPup=function()
-    local e=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
-    local n=TppBuddyService.DidObtainBuddyType(BuddyType.DOG)
-    local a=not TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
-    return(e and n)and a
+    local isElapsedTimeSinceLastPlayTooLongAgo=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
+    local isObtainBuddyDog=TppBuddyService.DidObtainBuddyType(BuddyType.DOG)
+    local isNotCanSortieBuddyDog=not TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
+    return(isElapsedTimeSinceLastPlayTooLongAgo and isObtainBuddyDog)and isNotCanSortieBuddyDog
   end,
   LongTimeNoSee_DdogLowLikability=function()
-    local e=TppStory.IsMissionCleard(10050)
-    local n=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
-    local a=TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
-    local t=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.DOG)<25
-    return((e and n)and a)and t
+    local isCleardQuietRescue=TppStory.IsMissionCleard(10050)
+    local isElapsedTimeSinceLastPlayTooLongAgo=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
+    local isCanSortieBuddyDog=TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
+    local isBuddyDogFriendlyPointLow=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.DOG)<25
+    return((isCleardQuietRescue and isElapsedTimeSinceLastPlayTooLongAgo)and isCanSortieBuddyDog)and isBuddyDogFriendlyPointLow
   end,
   LongTimeNoSee_DdogHighLikability=function()
-    local e=TppStory.IsMissionCleard(10050)
-    local n=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
-    local a=TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
-    local t=25<=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.DOG)and TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.DOG)<75
-    return((e and n)and a)and t
+    local isCleardQuietRescue=TppStory.IsMissionCleard(10050)
+    local isElapsedTimeSinceLastPlayTooLongAgo=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
+    local isCanSortieBuddyDog=TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
+    local isBuddyDogFriendlyPointHigh=25<=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.DOG)and TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.DOG)<75
+    return((isCleardQuietRescue and isElapsedTimeSinceLastPlayTooLongAgo)and isCanSortieBuddyDog)and isBuddyDogFriendlyPointHigh
   end,
   LongTimeNoSee_DdogSuperHighLikability=function()
-    local o=TppStory.IsMissionCleard(10050)
-    local n=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
-    local a=TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
-    local e=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.DOG)>=75
-    return((o and n)and a)and e
+    local isCleardQuietRescue=TppStory.IsMissionCleard(10050)
+    local isElapsedTimeSinceLastPlayTooLongAgo=gvars.elapsedTimeSinceLastPlay>=lastPlayTooLongAgoTime
+    local isCanSortieBuddyDog=TppBuddyService.CanSortieBuddyType(BuddyType.DOG)
+    local isBuddyDogFriendlyPointSuperHigh=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.DOG)>=75
+    return((isCleardQuietRescue and isElapsedTimeSinceLastPlayTooLongAgo)and isCanSortieBuddyDog)and isBuddyDogFriendlyPointSuperHigh
   end,
   AttackedFromOtherPlayer_KnowWhereFrom=function()
     if this.IsPlayedMBEventDemo"AttackedFromOtherPlayer_KnowWhereFrom"or this.IsPlayedMBEventDemo"AttackedFromOtherPlayer_UnknowWhereFrom"then
       return false
     end
-    local n=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_CAPTURE_THE_WEAPON_DEALER
-    local e=vars.mbmDemoAttackedFromOtherPlayerKnowWhereFrom~=0
-    return n and e
+    local isCleardCaptureWeaponDealer=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_CAPTURE_THE_WEAPON_DEALER
+    local isAttackedFromOtherPlayerKnowWhereFrom=vars.mbmDemoAttackedFromOtherPlayerKnowWhereFrom~=0
+    return isCleardCaptureWeaponDealer and isAttackedFromOtherPlayerKnowWhereFrom
   end,
   AttackedFromOtherPlayer_UnknowWhereFrom=function()
     if this.IsPlayedMBEventDemo"AttackedFromOtherPlayer_KnowWhereFrom"or this.IsPlayedMBEventDemo"AttackedFromOtherPlayer_UnknowWhereFrom"then
       return false
     end
-    local e=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_CAPTURE_THE_WEAPON_DEALER
-    local n=vars.mbmRequestDemoAttackedFromOtherPlayer~=0
-    return e and n
+    local isCleardCaptureWeaponDealer=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_CAPTURE_THE_WEAPON_DEALER
+    local isAttackedFromOtherPlayer=vars.mbmRequestDemoAttackedFromOtherPlayer~=0
+    return isCleardCaptureWeaponDealer and isAttackedFromOtherPlayer
   end,
   MoraleOfMBIsLow=function()
     if this.IsPlayedMBEventDemo"MoraleOfMBIsLow"then
       return false
     end
-    local n=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_TO_MATHER_BASE
-    local e=TppMotherBaseManagement.GetGmp()<0
-    return n and e
+    local isCleardToMatherBase=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_TO_MATHER_BASE
+    local isGmpRed=TppMotherBaseManagement.GetGmp()<0
+    return isCleardToMatherBase and isGmpRed
   end,
   OcelotIsPupilOfSnake=function()
     if this.IsPlayedMBEventDemo"OcelotIsPupilOfSnake"then
       return false
     end
-    local n=TppStory.IsMissionCleard(10040)
-    local e=0
-    for n=TppMotherBaseManagementConst.SECTION_COMBAT,TppMotherBaseManagementConst.SECTION_SECURITY do
-      e=e+#TppMotherBaseManagement.GetOutOnMotherBaseStaffs{sectionId=n}
+    local isCleardSecretWeapon=TppStory.IsMissionCleard(10040)
+    local numGotOutOnMotherBaseStaffs=0
+    for sectionIndex=TppMotherBaseManagementConst.SECTION_COMBAT,TppMotherBaseManagementConst.SECTION_SECURITY do
+      numGotOutOnMotherBaseStaffs=numGotOutOnMotherBaseStaffs+#TppMotherBaseManagement.GetOutOnMotherBaseStaffs{sectionId=sectionIndex}
     end
-    local e=e>=3
-    return n and e
+    local isGotThreeOutOnMotherBaseStaffs=numGotOutOnMotherBaseStaffs>=3
+    return isCleardSecretWeapon and isGotThreeOutOnMotherBaseStaffs
   end,
   HappyBirthDay=function()
     if this.IsPlayedMBEventDemo"HappyBirthDay"then
       return false
     end
-    local a=TppUiCommand.IsBirthDay()
-    local n=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_TO_MATHER_BASE
-    local e=TppStory.GetClearedMissionCount{10036,10043,10033}>=1
-    return(a and n)and e
+    local isBirthDay=TppUiCommand.IsBirthDay()
+    local isCleardToMatherBase=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_TO_MATHER_BASE
+    local isCleardOneAfghFlagMission=TppStory.GetClearedMissionCount{10036,10043,10033}>=1
+    return(isBirthDay and isCleardToMatherBase)and isCleardOneAfghFlagMission
   end,
   HappyBirthDayWithQuiet=function()
     return false
@@ -1160,22 +1219,22 @@ this.mtbsPriorityFuncList={
     if this.IsPlayedMBEventDemo"QuietOnHeliInRain"then
       return false
     else
-      local n=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_OKB_ZERO
-      local t=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.QUIET)>=80
-      local a=(vars.buddyType==BuddyType.QUIET)
-      local e=TppStory.CanArrivalQuietInMB(false)
-      return((n and t)and a)and e
+      local isCleardOkbZero=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_OKB_ZERO
+      local isQuietFriendlyPointHigh=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.QUIET)>=80
+      local isCurrentBuddyQuiet=(vars.buddyType==BuddyType.QUIET)
+      local isQuietOnMB=TppStory.CanArrivalQuietInMB(false)
+      return((isCleardOkbZero and isQuietFriendlyPointHigh)and isCurrentBuddyQuiet)and isQuietOnMB
     end
   end,
   QuietHasFriendshipWithChild=function()
     if this.IsPlayedMBEventDemo"QuietHasFriendshipWithChild"then
       return false
     else
-      local t=TppLocation.GetLocalMbStageClusterGrade(TppDefine.CLUSTER_DEFINE.Medical+1)>=2
-      local a=TppStory.CanArrivalQuietInMB(true)
-      local n=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_OKB_ZERO
-      local e=not(TppQuest.IsOpen"outland_q20913"or TppQuest.IsOpen"lab_q20914")
-      return((t and a)and n)and e
+      local isMedicalClusterGrade2=TppLocation.GetLocalMbStageClusterGrade(TppDefine.CLUSTER_DEFINE.Medical+1)>=2
+      local isQuietOnMB=TppStory.CanArrivalQuietInMB(true)
+      local isCleardOkbZero=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_OKB_ZERO
+      local isNotChildQuestOpen=not(TppQuest.IsOpen"outland_q20913"or TppQuest.IsOpen"lab_q20914")
+      return((isMedicalClusterGrade2 and isQuietOnMB)and isCleardOkbZero)and isNotChildQuestOpen
     end
   end,
   QuietWishGoMission=function()
@@ -1197,19 +1256,19 @@ this.mtbsPriorityFuncList={
     if this.IsPlayedMBEventDemo"SnakeHasBadSmell_WithoutQuiet"then
       return false
     end
-    local e=TppStory.IsMissionCleard(10040)
-    local n=Player.GetSmallFlyLevel()>=1
-    return e and n
+    local isCleardSecretWeapon=TppStory.IsMissionCleard(10040)
+    local isPlayerBadSmell=Player.GetSmallFlyLevel()>=1
+    return isCleardSecretWeapon and isPlayerBadSmell
   end,
   SnakeHasBadSmell_000=function()
     if this.IsPlayedMBEventDemo"SnakeHasBadSmell_000"then
       return false
     end
-    local n=TppStory.IsMissionCleard(10086)
-    local e=TppStory.CanArrivalQuietInMB(false)
-    local a=Player.GetSmallFlyLevel()>=1
-    local t=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.QUIET)>=60
-    return((n and e)and a)and t
+    local isCleardTailTheInterpreter=TppStory.IsMissionCleard(10086)
+    local isQuietOnMB=TppStory.CanArrivalQuietInMB(false)
+    local isPlayerBadSmell=Player.GetSmallFlyLevel()>=1
+    local isQuietFriendlyPointHigh=TppBuddyService.GetFriendlyPoint(BuddyFriendlyType.QUIET)>=60
+    return((isCleardTailTheInterpreter and isQuietOnMB)and isPlayerBadSmell)and isQuietFriendlyPointHigh
   end,
   SnakeHasBadSmell_001=function()
     return false
@@ -1224,18 +1283,18 @@ this.mtbsPriorityFuncList={
     if this.IsPlayedMBEventDemo"LiquidAndChildSoldier"then
       return false
     end
-    local n=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_WHITE_MAMBA
-    local e=TppQuest.IsOpen"sovietBase_q99030"
-    return n and not e
+    local isCleardLiquidRescue=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_WHITE_MAMBA
+    local isAiPodQuestOpen=TppQuest.IsOpen"sovietBase_q99030"
+    return isCleardLiquidRescue and not isAiPodQuestOpen
   end,
   InterrogateQuiet=function()
     if this.IsPlayedMBEventDemo"InterrogateQuiet"then
       return false
     else
-      local n=TppStory.CanArrivalQuietInMB(true)
-      local e=TppQuest.IsOpen"sovietBase_q99030"
-      local a=not TppRadio.IsPlayed"f2000_rtrg8290"
-      return(n and e)and a
+      local isQuietOnMB=TppStory.CanArrivalQuietInMB(true)
+      local isAiPodQuestOpen=TppQuest.IsOpen"sovietBase_q99030"
+      local isNotPlayRadioStartQuestChildSoldier=not TppRadio.IsPlayed"f2000_rtrg8290"
+      return(isQuietOnMB and isAiPodQuestOpen)and isNotPlayRadioStartQuestChildSoldier
     end
   end,
   AnableDevBattleGear=function()
@@ -1248,9 +1307,9 @@ this.mtbsPriorityFuncList={
     if this.IsPlayedMBEventDemo"CodeTalkerSunBath"then
       return false
     end
-    local n=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_OKB_ZERO
-    local e=TppStory.IsMissionCleard(10130)
-    return n and e
+    local isCleardOkbZero=TppStory.GetCurrentStorySequence()>=TppDefine.STORY_SEQUENCE.CLEARD_OKB_ZERO
+    local isCleardCodeTalkerRescue=TppStory.IsMissionCleard(10130)
+    return isCleardOkbZero and isCleardCodeTalkerRescue
   end,
   ParasiticWormCarrierKill=function()
     return false

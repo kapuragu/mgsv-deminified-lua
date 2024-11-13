@@ -608,34 +608,35 @@ function this.QAReleaseDebugUpdate()
       return
     end
     Print(newContext,{.5,.5,1},"LuaUI ShowEventTask")
-    local function s(t,a,i)
-      local n
-      if FobUI.IsCompleteEventTask(a,i)then
-        n=" o "
+    local function printEventTaskCompletion(taskList,taskNo,isFobSneak)
+      --rlc O is yes, X is no
+      local isCompletedString
+      if FobUI.IsCompleteEventTask(taskNo,isFobSneak)then
+        isCompletedString=" o "
       else
-        n=" x "
+        isCompletedString=" x "
       end
-      local s=t[a]and t[a].detectType
-      if s then
-        local o=mvars.qaDebug.debugEventTaskTextTable and mvars.qaDebug.debugEventTaskTextTable[s]
-        if not o then
-          o="threshold is"
+      local detectType=taskList[taskNo]and taskList[taskNo].detectType
+      if detectType then
+        local thresholdTextTableForDetectType=mvars.qaDebug.debugEventTaskTextTable and mvars.qaDebug.debugEventTaskTextTable[detectType]
+        if not thresholdTextTableForDetectType then
+          thresholdTextTableForDetectType="threshold is"
         end
-        Print(newContext,string.format("   Task %1d : [%s] %s %06.2f : ( Current %06.2f )",a,n,o,t[a].threshold,FobUI.GetCurrentEventTaskValue(a,i)))
+        Print(newContext,string.format("   Task %1d : [%s] %s %06.2f : ( Current %06.2f )",taskNo,isCompletedString,thresholdTextTableForDetectType,taskList[taskNo].threshold,FobUI.GetCurrentEventTaskValue(taskNo,isFobSneak)))
       end
     end
     Print(newContext,{.5,1,.5},"FobSneak eventTask")
-    for a=0,7 do
-      local e=mvars.ui_eventTaskDefine.sneak
-      if e and e[a]then
-        s(e,a,true)
+    for sneakEventTaskIndex=0,7 do
+      local sneakEventTaskList=mvars.ui_eventTaskDefine.sneak
+      if sneakEventTaskList and sneakEventTaskList[sneakEventTaskIndex]then
+        printEventTaskCompletion(sneakEventTaskList,sneakEventTaskIndex,true)
       end
     end
     Print(newContext,{.5,1,.5},"FobDefence eventTask")
-    for a=0,7 do
-      local e=mvars.ui_eventTaskDefine.defence
-      if e and e[a]then
-        s(e,a,false)
+    for defenceEventTaskIndex=0,7 do
+      local defenceEventTaskList=mvars.ui_eventTaskDefine.defence
+      if defenceEventTaskList and defenceEventTaskList[defenceEventTaskIndex]then
+        printEventTaskCompletion(defenceEventTaskList,defenceEventTaskIndex,false)
       end
     end
   end
@@ -649,32 +650,32 @@ function this.QAReleaseDebugUpdate()
     elseif not mvars.ui_onlineChallengeTaskDefine then
       Print(newContext,"Not defined online challenge task!")
     else
-      local t=mvars.qaDebug.debugOnlineChallengeTaskMissionList[mvars.qaDebug.showOnlineChallengeTask]
-      if not t then
+      local challengeTaskMissionCode=mvars.qaDebug.debugOnlineChallengeTaskMissionList[mvars.qaDebug.showOnlineChallengeTask]
+      if not challengeTaskMissionCode then
         mvars.qaDebug.showOnlineChallengeTask=0
         return
       end
-      local function i(n,o)
-        local t
-        if TppChallengeTask.IsCompletedOnlineTask(o)then
-          t=" o "
+      local function printOnlineChallengeTaskCompletion(onlineChallengeTaskDefine,onlineChallengeTaskIndex)
+        local isOnlineTaskCompletedString
+        if TppChallengeTask.IsCompletedOnlineTask(onlineChallengeTaskIndex)then
+          isOnlineTaskCompletedString=" o "
         else
-          t=" x "
+          isOnlineTaskCompletedString=" x "
         end
-        local s=n[o]and n[o].detectType
-        if s then
-          local r=mvars.qaDebug.debugOnlineChallengeTaskTextTable and mvars.qaDebug.debugOnlineChallengeTaskTextTable[s]
-          if not r then
-            r="threshold is"
+        local detectType=onlineChallengeTaskDefine[onlineChallengeTaskIndex]and onlineChallengeTaskDefine[onlineChallengeTaskIndex].detectType
+        if detectType then
+          local thresholdTextForDetectType=mvars.qaDebug.debugOnlineChallengeTaskTextTable and mvars.qaDebug.debugOnlineChallengeTaskTextTable[detectType]
+          if not thresholdTextForDetectType then
+            thresholdTextForDetectType="threshold is"
           end
-          Print(newContext,string.format("   Task %02d : [%s] %s %06.2f : ( Current %06.2f )",o,t,r,n[o].threshold,OnlineChallengeTask.GetCurrentTaskValue(o)))
+          Print(newContext,string.format("   Task %02d : [%s] %s %06.2f : ( Current %06.2f )",onlineChallengeTaskIndex,isOnlineTaskCompletedString,thresholdTextForDetectType,onlineChallengeTaskDefine[onlineChallengeTaskIndex].threshold,OnlineChallengeTask.GetCurrentTaskValue(onlineChallengeTaskIndex)))
         end
       end
-      Print(newContext,string.format("missionCode = %05d",t))
-      for a=0,23 do
-        local e=mvars.ui_onlineChallengeTaskDefine
-        if e[a]and(e[a].missionCode==t)then
-          i(e,a,true)
+      Print(newContext,string.format("missionCode = %05d",challengeTaskMissionCode))
+      for onlineChallengeTaskIndex=0,23 do
+        local onlineChallengeTaskDefine=mvars.ui_onlineChallengeTaskDefine
+        if onlineChallengeTaskDefine[onlineChallengeTaskIndex]and(onlineChallengeTaskDefine[onlineChallengeTaskIndex].missionCode==challengeTaskMissionCode)then
+          printOnlineChallengeTaskCompletion(onlineChallengeTaskDefine,onlineChallengeTaskIndex,true)
         end
       end
     end
@@ -686,30 +687,30 @@ function this.QAReleaseDebugUpdate()
   end
   --<
 end
-function this.Print2D(e)
-  if(e==nil)then
+function this.Print2D(info)
+  if(info==nil)then
     return
   end
-  local t=e.showTime or(3*30)
-  local o=e.xPos or 25
-  local n=e.yPos or 425
-  local s=e.size or 20
-  local r=e.color or"white"
-  local e=e.text or""
-  r=this._GetColor(r)
-  GrxDebug.Print2D{life=t,x=o,y=n,size=s,color=r,args={e}}
+  local showTime=info.showTime or(3*30)
+  local xPos=info.xPos or 25
+  local yPos=info.yPos or 425
+  local size=info.size or 20
+  local color=info.color or"white"
+  local text=info.text or""
+  color=this._GetColor(color)
+  GrxDebug.Print2D{life=showTime,x=xPos,y=yPos,size=size,color=color,args={text}}
 end
-function this.DEBUG_MakeUserSVarList(e)
-  if not IsTypeTable(e)then
+function this.DEBUG_MakeUserSVarList(userSVarList)
+  if not IsTypeTable(userSVarList)then
     return
   end
   mvars.dbg_userSaveVarList={}
-  for a,e in pairs(e)do
-    table.insert(mvars.dbg_userSaveVarList,e.name)
+  for a,sVarDefine in pairs(userSVarList)do
+    table.insert(mvars.dbg_userSaveVarList,sVarDefine.name)
   end
 end
-function this.AddReturnToSelector(e)
-  e:AddItem("< return",DebugSelector.Pop)
+function this.AddReturnToSelector(selector)
+  selector:AddItem("< return",DebugSelector.Pop)
 end
 function this.DEBUG_Init()
   mvars.debug.returnSelect=false;(nil).AddDebugMenu(" Select","Return select","bool",mvars.debug,"returnSelect")
@@ -787,43 +788,43 @@ function this.DebugUpdate()
   if mvarsDebug.showSVars then
     Print(newContext,"")
     Print(newContext,{.5,.5,1},"LuaMission DBG.showSVars")
-    for a,e in pairs(mvars.dbg_userSaveVarList)do
-      Print(newContext,string.format(" %s = %s",tostring(e),tostring(svars[e])))
+    for a,saveVarName in pairs(mvars.dbg_userSaveVarList)do
+      Print(newContext,string.format(" %s = %s",tostring(saveVarName),tostring(svars[saveVarName])))
     end
   end
   if mvarsDebug.showMVars then
     Print(newContext,{.5,.5,1},"LuaMission DBG.showMVars")
-    for a,e in pairs(mvars)do
-      Print(newContext,string.format(" %s = %s",tostring(a),tostring(e)))
+    for mVarName,mVarValue in pairs(mvars)do
+      Print(newContext,string.format(" %s = %s",tostring(mVarName),tostring(mVarValue)))
     end
   end
   if mvarsDebug.showMissionArea then
     Print(newContext,{.5,.5,1},"LuaMission MIS.missionArea")
-    local a
+    local zoneStatusString
     if mvars.mis_isOutsideOfMissionArea then
-      a="Outside"
+      zoneStatusString="Outside"
     else
-      a="Inside"
+      zoneStatusString="Inside"
     end
-    Print(newContext,"outerZone : "..a)
+    Print(newContext,"outerZone : "..zoneStatusString)
     if mvars.mis_isAlertOutOfMissionArea then
-      a="Outside"
+      zoneStatusString="Outside"
     else
-      a="Inside"
+      zoneStatusString="Inside"
     end
-    Print(newContext,"innerZone : "..a)
+    Print(newContext,"innerZone : "..zoneStatusString)
     if mvars.mis_isOutsideOfHotZone then
-      a="Outside"
+      zoneStatusString="Outside"
     else
-      a="Inside"
+      zoneStatusString="Inside"
     end
-    Print(newContext,"hotZone : "..a)
+    Print(newContext,"hotZone : "..zoneStatusString)
     Print(newContext,"hotZone clear check : isNotAlert = "..(tostring(mvars.debug.notHotZone_isNotAlert)..(", isPlayerStatusNormal = "..(tostring(mvars.debug.notHotZone_isPlayerStatusNormal)..(", isNotHelicopter = "..tostring(mvars.debug.notHotZone_isNotHelicopter))))))
     Print(newContext,"Mission clear timer: "..tostring(IsTimerActive"Timer_OutsideOfHotZoneCount"))
     Print(newContext,{.5,1,.5},"Recent all target status")
-    local e=mvars.debug.checkedTargetStatus or{}
-    for a,e in pairs(e)do
-      Print(newContext,"  TargetName = "..(a..(" : "..e)))
+    local checkedTargetStatus=mvars.debug.checkedTargetStatus or{}
+    for targetName,isChecked in pairs(checkedTargetStatus)do
+      Print(newContext,"  TargetName = "..(targetName..(" : "..isChecked)))
     end
   end
   if mvars.debug.showClearState then
@@ -847,21 +848,21 @@ function this.DebugUpdate()
   if mvarsDebug.showSysSVars then
     Print(newContext,"")
     Print(newContext,{.5,.5,1},"LuaSystem DBG.showSysSVars")
-    for e,a in pairs(svars.__as)do
-      if(a<=1)then
-        Print(newContext,string.format(" %s = %s",tostring(e),tostring(svars[e])))
+    for sysSVarName,sysSVarValue in pairs(svars.__as)do
+      if(sysSVarValue<=1)then
+        Print(newContext,string.format(" %s = %s",tostring(sysSVarName),tostring(svars[sysSVarName])))
       else
-        Print(newContext,string.format(" %s = %s",tostring(e),tostring(a)))
-        for a=0,(a-1)do
-          Print(newContext,string.format("   %s[%d] = %s",tostring(e),a,tostring(svars[e][a])))
+        Print(newContext,string.format(" %s = %s",tostring(sysSVarName),tostring(sysSVarValue)))
+        for index=0,(sysSVarValue-1)do
+          Print(newContext,string.format("   %s[%d] = %s",tostring(sysSVarName),index,tostring(svars[sysSVarName][index])))
         end
       end
     end
   end
   if mvarsDebug.showDebugPerfCheck then
     Print(newContext,{.5,.5,1},"LuaSystem DBG.showPerf")
-    for t,e in pairs(perfCheckTimesStrings)do
-      Print(newContext," perf["..(this.PERF_CHECK_TYPE[t]..("] = "..e)))
+    for perfCheckType,perfCheckTime in pairs(perfCheckTimesStrings)do
+      Print(newContext," perf["..(this.PERF_CHECK_TYPE[perfCheckType]..("] = "..perfCheckTime)))
     end
   end
   if mvars.debug.AnimalBlock then
@@ -887,19 +888,19 @@ function this.DebugUpdate()
     Print(newContext,"animal block state : "..tostring(animalBlockStateString))
     if mvars.animalBlockScript then
       Print(newContext,"animalBlockScript exist")
-      local t=""
+      local OnMessageExistString=""
       if mvars.animalBlockScript.OnMessage then
-        t="exist"
+        OnMessageExistString="exist"
       else
-        t="  not"
+        OnMessageExistString="  not"
       end
-      local n=""
+      local OnReloadExistString=""
       if mvars.animalBlockScript.OnReload then
-        n="exist"
+        OnReloadExistString="exist"
       else
-        n="  not"
+        OnReloadExistString="  not"
       end
-      Print(newContext,"OnMessage "..(tostring(t)..(" OnReload "..tostring(n))))
+      Print(newContext,"OnMessage "..(tostring(OnMessageExistString)..(" OnReload "..tostring(OnReloadExistString))))
       this.ShowMessageTable(newContext,"MessageTable",mvars.animalBlockScript.messageExecTable)
     else
       if animalBlockState==ScriptBlock.SCRIPT_BLOCK_STATE_INACTIVE or animalBlockState==ScriptBlock.SCRIPT_BLOCK_STATE_ACTIVE then
@@ -914,32 +915,32 @@ function this.DebugUpdate()
     for intelName,trapInfo in pairs(mvars.ply_intelTrapInfo)do
       if Tpp.IsTypeString(intelName)then
         Print(newContext,{.5,1,.5},"intelName = "..tostring(intelName))
-        for e,a in pairs(trapInfo)do
-          Print(newContext,tostring(e)..(" = "..tostring(a)))
+        for trapVar,trapValue in pairs(trapInfo)do
+          Print(newContext,tostring(trapVar)..(" = "..tostring(trapValue)))
         end
       end
     end
   end
   if(mvarsDebug.showSubscriptMessageTable>0)then
     Print(newContext,{.5,.5,1},"LuaMessage subScripts")
-    local o={"sequence","enemy","demo","radio","sound"}
-    local o=o[mvars.debug.showSubscriptMessageTable]
-    if o then
-      local missionName=TppMission.GetMissionName()..("_"..o)
-      if mvars.rad_subScripts[o]then
-        local e=mvars.rad_subScripts[o]._messageExecTable
-        this.ShowMessageTable(newContext,missionName,e)
+    local subScriptNameList={"sequence","enemy","demo","radio","sound"}
+    local subScriptName=subScriptNameList[mvars.debug.showSubscriptMessageTable]
+    if subScriptName then
+      local missionName=TppMission.GetMissionName()..("_"..subScriptName)
+      if mvars.rad_subScripts[subScriptName]then
+        local subScript_messageExecTable=mvars.rad_subScripts[subScriptName]._messageExecTable
+        this.ShowMessageTable(newContext,missionName,subScript_messageExecTable)
       end
     end
   end
   if(mvarsDebug.showSequenceMessageTable>0)then
     Print(newContext,{.5,.5,1},"LuaMessage sequence")
-    local o=TppSequence.GetSequenceNameWithIndex(mvars.debug.showSequenceMessageTable)
+    local sequenceIndex=TppSequence.GetSequenceNameWithIndex(mvars.debug.showSequenceMessageTable)
     if mvars.seq_sequenceTable then
-      local e=mvars.seq_sequenceTable[o]
-      if e then
-        local e=e._messageExecTable
-        this.ShowMessageTable(newContext,o,e)
+      local sequenceTable=mvars.seq_sequenceTable[sequenceIndex]
+      if sequenceTable then
+        local sequenceTable_messageExecTable=sequenceTable._messageExecTable
+        this.ShowMessageTable(newContext,sequenceIndex,sequenceTable_messageExecTable)
       end
     end
   end
@@ -948,9 +949,9 @@ function this.DebugUpdate()
   end
   if(mvarsDebug.showLibraryMessageTable>0)then
     Print(newContext,{.5,.5,1},"LuaMessage library")
-    local e=Tpp._requireList[mvarsDebug.showLibraryMessageTable]
-    local o=_G[e].messageExecTable
-    this.ShowMessageTable(newContext,e,o)
+    local libName=Tpp._requireList[mvarsDebug.showLibraryMessageTable]
+    local lib_messageExecTable=_G[libName].messageExecTable
+    this.ShowMessageTable(newContext,libName,lib_messageExecTable)
   end
   if mvars.debug.showWeaponSelect then
     Print(newContext,{.5,.5,1},"LuaWeapon")
@@ -963,13 +964,13 @@ function this.DebugUpdate()
     local weaponCategory=mvars.debug.weaponCategory
     local weaponCategoryList=mvars.debug.weaponCategoryList[mvars.debug.weaponCategory]
     Print(newContext,{.5,1,.5},"Current weapon category : "..weaponCategoryList[1])
-    local equipId,RENwhatIsThis
+    local equipId,equipName
     local currentWeaponId,selectedWeaponId,max=0,1,5
     if mvars.debug.selectedWeaponId>0 then
       selectedWeaponId=mvars.debug.selectedWeaponId
     end
-    for k,v in pairs(TppEquip)do
-      local categoryId=string.sub(k,1,weaponCategoryList[2])
+    for tppEquipName,tppEquipValue in pairs(TppEquip)do
+      local categoryId=string.sub(tppEquipName,1,weaponCategoryList[2])
       local isInCurrentCategory=false
       for a,listCategoryId in ipairs(weaponCategoryList[3])do
         if categoryId==listCategoryId then
@@ -980,11 +981,11 @@ function this.DebugUpdate()
         currentWeaponId=currentWeaponId+1
         if(selectedWeaponId-currentWeaponId)<=max then
           if currentWeaponId==selectedWeaponId then
-            equipId=v
-            RENwhatIsThis=k
-            Print(newContext,{.5,1,.5},"> EquipId = TppEquip."..k)
+            equipId=tppEquipValue
+            equipName=tppEquipName
+            Print(newContext,{.5,1,.5},"> EquipId = TppEquip."..tppEquipName)
           else
-            Print(newContext,"  EquipId = TppEquip."..k)
+            Print(newContext,"  EquipId = TppEquip."..tppEquipName)
           end
         end
         if currentWeaponId==(selectedWeaponId+max)then
@@ -998,24 +999,24 @@ function this.DebugUpdate()
     end
   end
 end
-function this.ShowMessageTable(r,o,a)
+function this.ShowMessageTable(context,moduleName,messageExecTable)
   local DebugPrint=(nil).Print
-  DebugPrint(r,{.5,1,.5},o)
-  if a==nil then
+  DebugPrint(context,{.5,1,.5},moduleName)
+  if messageExecTable==nil then
     return
   end
-  for o,a in pairs(a)do
-    local o=DEBUG_StrCode32ToString(o)
-    if a then
-      for t,a in pairs(a)do
-        local t=DEBUG_StrCode32ToString(t)
-        if a.func then
-          DebugPrint(r,{1,1,1},o..(" : "..(t..(" : "..tostring(a.func)))))
+  for messageClassNameS32,messageClassTable in pairs(messageExecTable)do
+    local messageClassName=DEBUG_StrCode32ToString(messageClassNameS32)
+    if messageClassTable then
+      for messageNameS32,messageTable in pairs(messageClassTable)do
+        local messageName=DEBUG_StrCode32ToString(messageNameS32)
+        if messageTable.func then
+          DebugPrint(context,{1,1,1},messageClassName..(" : "..(messageName..(" : "..tostring(messageTable.func)))))
         end
-        local a=a.sender
-        if a then
-          for n,a in pairs(a)do
-            DebugPrint(r,{1,1,1},o..(" : "..(t..(" : Sender = "..(DEBUG_StrCode32ToString(n)..(" : "..tostring(a)))))))
+        local messageSenderList=messageTable.sender
+        if messageSenderList then
+          for messageSenderS32,messageSenderId in pairs(messageSenderList)do
+            DebugPrint(context,{1,1,1},messageClassName..(" : "..(messageName..(" : Sender = "..(DEBUG_StrCode32ToString(messageSenderS32)..(" : "..tostring(messageSenderId)))))))
           end
         end
       end

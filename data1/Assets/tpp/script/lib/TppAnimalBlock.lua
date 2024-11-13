@@ -263,87 +263,87 @@ function this._RegisterClockMessage(clockFmt,clockTime,timeLagClock,RENsomeBool,
   TppClock.RegisterClockMessage(clockName,tppClockTime)
   return clockName
 end
-function this._AddClockMessage(n,t,a,r)
-  local numAnimals=1
-  if IsTable(t)then
-    numAnimals=t.groupNumber or 0
+function this._AddClockMessage(animalType,animalSetting,setupTable,animalCount)
+  local groupNumber=1
+  if IsTable(animalSetting)then
+    groupNumber=animalSetting.groupNumber or 0
   end
-  if r+numAnimals>maxAnimals then
+  if animalCount+groupNumber>maxAnimals then
     return
   end
-  local m=r+numAnimals
-  local nightStartTime=t.nightStartTime
+  local totalAnimalCount=animalCount+groupNumber
+  local nightStartTime=animalSetting.nightStartTime
   if nightStartTime==nil then
-    nightStartTime=this.GetDefaultTimeTable(n).nightStartTime
+    nightStartTime=this.GetDefaultTimeTable(animalType).nightStartTime
   end
-  local c=TppClock.ParseTimeString(nightStartTime,"number")
-  local nightEndTime=t.nightEndTime
+  local nightStartClockTime=TppClock.ParseTimeString(nightStartTime,"number")
+  local nightEndTime=animalSetting.nightEndTime
   if nightEndTime==nil then
-    nightEndTime=this.GetDefaultTimeTable(n).nightEndTime
+    nightEndTime=this.GetDefaultTimeTable(animalType).nightEndTime
   end
-  local i=TppClock.ParseTimeString(nightEndTime,"number")
-  local timeLag=t.timeLag
+  local nightEndClockTime=TppClock.ParseTimeString(nightEndTime,"number")
+  local timeLag=animalSetting.timeLag
   if timeLag==nil then
-    timeLag=this.GetDefaultTimeTable(n).timeLag
+    timeLag=this.GetDefaultTimeTable(animalType).timeLag
   end
-  local t=TppClock.ParseTimeString(timeLag,"number")
+  local timeLagClockTime=TppClock.ParseTimeString(timeLag,"number")
   weatherTableCount=0
-  for a=r,m-1 do
-    this._RegisterClockMessage(this.CLOCK_MESSAGE_AT_NIGHT_FORMAT,c,t,true,a)
-    this._RegisterClockMessage(this.CLOCK_MESSAGE_AT_MORNING_FORMAT,i,t,false,a)
+  for animalIndex=animalCount,totalAnimalCount-1 do
+    this._RegisterClockMessage(this.CLOCK_MESSAGE_AT_NIGHT_FORMAT,nightStartClockTime,timeLagClockTime,true,animalIndex)
+    this._RegisterClockMessage(this.CLOCK_MESSAGE_AT_MORNING_FORMAT,nightEndClockTime,timeLagClockTime,false,animalIndex)
     l_numAnimals=l_numAnimals+1
   end
 end
-function this._ChangeRouteAtTime(sender,time)
-  local a=mvars.loc_locationAnimalSettingTable
-  local o=a.animalTypeSetting[mvars.animalBlockKeyName]
-  local a=-1
-  for e in string.gmatch(sender,"%d+")do
-    a=tonumber(e)
+function this._ChangeRouteAtTime(timerName,time)
+  local locationAnimalSettingTable=mvars.loc_locationAnimalSettingTable
+  local animalBlockSettingsTable=locationAnimalSettingTable.animalTypeSetting[mvars.animalBlockKeyName]
+  local numAnimalsFromTimerName=-1
+  for numAnimalsFromTimerNameString in string.gmatch(timerName,"%d+")do
+    numAnimalsFromTimerName=tonumber(numAnimalsFromTimerNameString)
   end
-  if a==-1 then
+  if numAnimalsFromTimerName==-1 then
     return
   end
-  local l=0
+  local animalCount=0
   local animalType=nil
-  local r=nil
-  for m,e in pairs(o)do
-    local o
-    local t
-    if IsString(e)then
-      o=e
-    elseif IsTable(e)then
-      o=m
-      t=e
+  local animalSetting=nil
+  for animalBlockSettingTypeName,animalBlockSettingTable in pairs(animalBlockSettingsTable)do
+    local animalType
+    local animalSettingTable
+    if IsString(animalBlockSettingTable)then
+      animalType=animalBlockSettingTable
+    elseif IsTable(animalBlockSettingTable)then
+      animalType=animalBlockSettingTypeName
+      animalSettingTable=animalBlockSettingTable
     end
-    local groupNumber=t.groupNumber or 0
-    if l<=a and a<l+groupNumber then
-      animalType=o
-      r=t
+    local groupNumber=animalSettingTable.groupNumber or 0
+    if animalCount<=numAnimalsFromTimerName and numAnimalsFromTimerName<animalCount+groupNumber then
+      animalType=animalType
+      animalSetting=animalSettingTable
       break
     end
-    l=l+groupNumber
+    animalCount=animalCount+groupNumber
   end
-  if animalType==nil or r==nil then
+  if animalType==nil or animalSetting==nil then
     return
   end
-  local t=this._GetSetupTable(animalType)
-  if t==nil then
+  local setupTable=this._GetSetupTable(animalType)
+  if setupTable==nil then
     return
   end
-  local a=a-l
+  local animalIndex=numAnimalsFromTimerName-animalCount
   local isNight=this._IsNightForAnimalType(animalType,time)
   if animalType=="Bear"then
     if isNight then
-      this._SetRoute(t.type,t.locatorFormat,t.nightRouteFormat,a)
+      this._SetRoute(setupTable.type,setupTable.locatorFormat,setupTable.nightRouteFormat,animalIndex)
     else
-      this._SetRoute(t.type,t.locatorFormat,t.routeFormat,a)
+      this._SetRoute(setupTable.type,setupTable.locatorFormat,setupTable.routeFormat,animalIndex)
     end
   else
     if isNight then
-      this._SetHerdRoute(t.type,t.locatorFormat,t.nightRouteFormat,a)
+      this._SetHerdRoute(setupTable.type,setupTable.locatorFormat,setupTable.nightRouteFormat,animalIndex)
     else
-      this._SetHerdRoute(t.type,t.locatorFormat,t.routeFormat,a)
+      this._SetHerdRoute(setupTable.type,setupTable.locatorFormat,setupTable.routeFormat,animalIndex)
     end
   end
 end
@@ -365,6 +365,7 @@ function this.InitializeBlockStatus()
   TppScriptBlock.ClearSavedScriptBlockInfo(blockId)
 end
 function this.OnActivateAnimalBlock(e)
+  --rlc theory: animal settings like routes could have been defined in the scriptblock lua, like quests, and this would process a table from it? 
   for e,e in pairs(e)do
   end
 end
@@ -382,25 +383,25 @@ function this.OnInitializeAnimalBlock()
   }
   l_numAnimals=0
   this.weatherTable={}
-  local t=mvars.loc_locationAnimalSettingTable
-  local t=t.animalTypeSetting[mvars.animalBlockKeyName]
-  local l=0
-  for o,n in pairs(t)do
+  local locationAnimalSettingTable=mvars.loc_locationAnimalSettingTable
+  local animalBlockSettingsTable=locationAnimalSettingTable.animalTypeSetting[mvars.animalBlockKeyName]
+  local numAnimals=0
+  for animalBlockSettingTypeName,animalBlockSettingTable in pairs(animalBlockSettingsTable)do
     local animalType
     local animalSetting
-    if IsString(n)then
-      animalType=n
-    elseif IsTable(n)then
-      animalType=o
-      animalSetting=n
+    if IsString(animalBlockSettingTable)then
+      animalType=animalBlockSettingTable
+    elseif IsTable(animalBlockSettingTable)then
+      animalType=animalBlockSettingTypeName
+      animalSetting=animalBlockSettingTable
     end
     local setupTable=this._GetSetupTable(animalType)
     if setupTable~=nil and animalType~="NoAnimal"then
       this._InitializeCommonAnimalSetting(animalType,animalSetting,setupTable)
-      this._AddClockMessage(animalType,animalSetting,setupTable,l)
+      this._AddClockMessage(animalType,animalSetting,setupTable,numAnimals)
       TppFreeHeliRadio.RegistAnimalOptionalRadio(animalType)
       local groupNumber=animalSetting.groupNumber or 0
-      l=l+groupNumber
+      numAnimals=numAnimals+groupNumber
     end
   end
   local weatherTable32=Tpp.StrCode32Table{Weather=this.weatherTable}
@@ -416,21 +417,21 @@ function this.OnReload()
     return
   end
   local locationAnimalSettingTable=mvars.loc_locationAnimalSettingTable
-  local animalSetting=locationAnimalSettingTable.animalTypeSetting[mvars.animalBlockKeyName]
+  local animalBlockSettingsTable=locationAnimalSettingTable.animalTypeSetting[mvars.animalBlockKeyName]
   local numAnimals=0
-  for k,v in pairs(animalSetting)do
+  for animalBlockSettingTypeName,animalBlockSettingTable in pairs(animalBlockSettingsTable)do
     local animalType
-    local l
-    if IsString(v)then
-      animalType=v
-    elseif IsTable(v)then
-      animalType=k
-      l=v
+    local animalSettingTable
+    if IsString(animalBlockSettingTable)then
+      animalType=animalBlockSettingTable
+    elseif IsTable(animalBlockSettingTable)then
+      animalType=animalBlockSettingTypeName
+      animalSettingTable=animalBlockSettingTable
     end
     --REF setupTable {type="TppGoat",locatorFormat="anml_goat_%02d",routeFormat="rt_anml_goat_%02d",nightRouteFormat="rt_anml_goat_n%02d",isHerd=true,isDead=false},
     local setupTable=this._GetSetupTable(animalType)
     if setupTable~=nil and animalType~="NoAnimal"then
-      local groupNumber=l.groupNumber or 0
+      local groupNumber=animalSettingTable.groupNumber or 0
       if numAnimals+groupNumber>maxAnimals then
         break
       end

@@ -1,20 +1,32 @@
 --TppInterrogation.lua
 local this={}
+
 local StrCode32=InfCore.StrCode32--tex was Fox.StrCode32
 local IsTypeTable=Tpp.IsTypeTable
 local GetGameObjectId=GameObject.GetGameObjectId
 local NULL_ID=GameObject.NULL_ID
 local SendCommand=GameObject.SendCommand
+
 --ORPHAN local DEBUG_StrCode32ToString=Tpp.DEBUG_StrCode32ToString
 function this.Messages()
   return Tpp.StrCode32Table{
     GameObject={
-      {msg="Interrogate",func=this._OnInterrogation},
-      {msg="InterrogateEnd",func=this._OnInterrogationEnd},
-      {msg="MapUpdate",func=this._OnMapUpdate}
+      {
+        msg="Interrogate",
+        func=this._OnInterrogation
+      },
+      {
+        msg="InterrogateEnd",
+        func=this._OnInterrogationEnd
+      },
+      {
+        msg="MapUpdate",
+        func=this._OnMapUpdate
+      }
     }
   }
 end
+
 function this.DeclareSVars()
   return{
     {name="InterrogationNormal",arraySize=128,type=TppScriptVars.TYPE_UINT32,value=0,save=true,sync=false,wait=false,category=TppScriptVars.CATEGORY_MISSION},
@@ -22,15 +34,19 @@ function this.DeclareSVars()
     nil
   }
 end
+
 function this.Init()
   this.messageExecTable=Tpp.MakeMessageExecTable(this.Messages())
 end
+
 function this.OnReload()
   this.messageExecTable=Tpp.MakeMessageExecTable(this.Messages())
 end
+
 function this.OnMessage(sender,messageId,arg0,arg1,arg2,arg3,strLogText)
   Tpp.DoMessage(this.messageExecTable,TppMission.CheckMessageOption,sender,messageId,arg0,arg1,arg2,arg3,strLogText)
 end
+
 function this.MakeFlagHigh(cpId)
   if cpId==NULL_ID then
     return
@@ -47,6 +63,7 @@ function this.MakeFlagHigh(cpId)
     end
   end
 end
+
 function this.ResetFlagHigh(cpId)
   if cpId==NULL_ID then
     return
@@ -57,6 +74,7 @@ function this.ResetFlagHigh(cpId)
   local index=mvars.interTable[cpId].index
   svars.InterrogationHigh[index]=0
 end
+
 function this.ResetFlagNormal(cpId)
   if cpId==NULL_ID then
     return
@@ -67,6 +85,7 @@ function this.ResetFlagNormal(cpId)
   local index=mvars.interTable[cpId].index
   svars.InterrogationNormal[index]=bit.bnot(0)
 end
+
 function this.UniqueInterrogationWithVoice(cpId,soundParameterId)
   if cpId==NULL_ID then
     return
@@ -83,6 +102,7 @@ function this.UniqueInterrogationWithVoice(cpId,soundParameterId)
   end
   SendCommand(cpId,{id="AssignInterrogationWithVoice",soundParameterId=soundParameterId,index=index})
 end
+
 function this.UniqueInterrogation(cpId,messageId)
   if cpId==NULL_ID then
     return
@@ -99,6 +119,7 @@ function this.UniqueInterrogation(cpId,messageId)
   end
   SendCommand(cpId,{id="AssignInterrogation",messageId=messageId,index=index})
 end
+
 function this.QuestInterrogation(cpId,messageId)
   if cpId==NULL_ID then
     return
@@ -115,6 +136,7 @@ function this.QuestInterrogation(cpId,messageId)
   end
   SendCommand(cpId,{id="AssignInterrogation",messageId=messageId,index=index})
 end
+
 function this.SetQuestHighIntTable(cpId,interrTable)
   if cpId==NULL_ID then
     return
@@ -149,6 +171,7 @@ function this.SetQuestHighIntTable(cpId,interrTable)
     svars.InterrogationHigh[cpInterrIndex]=bit.bor(svarBitfield,bitShift)
   end
 end
+
 function this.RemoveQuestHighIntTable(cpId,interrTable)
   if cpId==NULL_ID then
     return
@@ -169,6 +192,7 @@ function this.RemoveQuestHighIntTable(cpId,interrTable)
     end
   end
 end
+
 function this.AddHighInterrogation(cpId,interrTable)
   if cpId==NULL_ID then
     return
@@ -189,6 +213,7 @@ function this.AddHighInterrogation(cpId,interrTable)
     end
   end
 end
+
 function this.RemoveHighInterrogation(cpId,interrInfo)
   if cpId==NULL_ID then
     return
@@ -209,6 +234,7 @@ function this.RemoveHighInterrogation(cpId,interrInfo)
     end
   end
 end
+
 function this.InitUniqueInterrogation(interrogationTable)
   mvars.uniqueInterTable={uniqueChara={},unique={}}
   for interrType,interrTable in pairs(interrogationTable)do
@@ -220,6 +246,7 @@ function this.InitUniqueInterrogation(interrogationTable)
     end
   end
 end
+
 function this.ResetQuestTable()
   if mvars.questTable==nil then
     mvars.questTable={uniqueChara={},unique={}}
@@ -245,6 +272,7 @@ function this.AddQuestTable(interrTable)
     end
   end
 end
+
 --missionTable.enemy.interrogation
 function this.InitInterrogation(interrogationTable)
   mvars.interTable={}
@@ -266,6 +294,7 @@ function this.InitInterrogation(interrogationTable)
     end
   end
 end
+
 function this._AddGene(cpId)
   if cpId==NULL_ID then
     return
@@ -281,6 +310,7 @@ function this._AddGene(cpId)
     mvars.interTable[cpId]={index=index,layer={normal={},high={},uniqueChara={}}}
   end
 end
+
 function this.AddGeneInter(cpList)
   for cpName,useGeneInter in pairs(cpList)do
     if useGeneInter then
@@ -292,9 +322,11 @@ function this.AddGeneInter(cpList)
     end
   end
 end
+
 function this._OnMapUpdate()
   TppUI.ShowAnnounceLog"updateMap"
 end
+
 function this._OnInterrogation(soldierId,cpId,allowCollectionInterr)
   if allowCollectionInterr>0 then
   end
@@ -322,6 +354,7 @@ function this._OnInterrogation(soldierId,cpId,allowCollectionInterr)
   end
   this._AssignInterrogation(cpId,interrInfo.name,interrInfo.index)
 end
+
 function this._OnInterrogationEnd(soldierId,cpId,strCodeName,index)
   if index==0 then
     return
@@ -388,12 +421,15 @@ function this._OnInterrogationEnd(soldierId,cpId,strCodeName,index)
     svars.InterrogationNormal[cpInterrIndex]=bit.band(svars.InterrogationNormal[cpInterrIndex],bit.bnot(bit.lshift(1,rangedIndex-1)))
   end
 end
+
 function this._AssignInterrogation(cpId,messageId,index)
   SendCommand(cpId,{id="AssignInterrogation",messageId=messageId,index=index})
 end
+
 function this._AssignInterrogationCollection(cpId)
   SendCommand(cpId,{id="AssignInterrogationCollection"})
 end
+
 function this._SelectInterrogation(cpId,allowCollectionInterr)
   if mvars.interTable==nil then
     if allowCollectionInterr>0 then
@@ -448,4 +484,5 @@ function this._SelectInterrogation(cpId,allowCollectionInterr)
   end
   return{index=0,name=0}
 end
+
 return this

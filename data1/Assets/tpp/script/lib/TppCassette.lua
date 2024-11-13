@@ -3,15 +3,15 @@
 -- Conditions and functions for unlocking cassete tapes
 -- See also /Assets/tpp/sound/scripts/tape/PreinstallTape.lua
 local this={}
-
-local someMissionTapes={"tp_m_10020_03","tp_m_10020_04","tp_m_10020_05","tp_m_10020_06","tp_m_10020_12","tp_m_10280_11","tp_c_00000_03"}
+--rlc v tapes unlocked by A HERO'S WAY/s10036 and/or C2W/s10043, the same as s10033 entries except tp_c_00000_14
+local afghFlagMissionTapes={"tp_m_10020_03","tp_m_10020_04","tp_m_10020_05","tp_m_10020_06","tp_m_10020_12","tp_m_10280_11","tp_c_00000_03"}
 
 local missionClearTapes={}
 missionClearTapes[10010]={"tp_m_10010_01","tp_m_10010_02","tp_m_10010_03","tp_m_10010_05","tp_m_10010_06","tp_m_10010_07","tp_m_10010_10","tp_m_10110_03","tp_bgm_11_32"}
 missionClearTapes[10020]={"tp_m_10020_01","tp_m_10020_02","tp_m_10280_11"}
 missionClearTapes[10030]={"tp_m_10010_04","tp_m_10010_08","tp_m_10010_09"}
-missionClearTapes[10036]=someMissionTapes
-missionClearTapes[10043]=someMissionTapes
+missionClearTapes[10036]=afghFlagMissionTapes
+missionClearTapes[10043]=afghFlagMissionTapes
 missionClearTapes[10033]={"tp_m_10020_03","tp_m_10020_04","tp_m_10020_05","tp_m_10020_06","tp_m_10020_12","tp_m_10280_11","tp_c_00000_14","tp_c_00000_03"}
 missionClearTapes[10040]={"tp_m_10040_03","tp_c_00000_12"}
 missionClearTapes[10041]={}

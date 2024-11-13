@@ -58,19 +58,63 @@ this.PLAYSTYLE_SAVE_INDEX_MAX=20
 this.PLAYSTYLE_HISTORY_MAX=2
 this.MAX_TIPS_GUIDE_SHOWN_ONCE=256
 this.MAX_CONTROL_GUIDE_SHOWN_ONCE=128
-this.MESSAGE_GENERATION={[StrCode32"GameObject"]={[StrCode32"Fulton"]=0,[StrCode32"VehicleBroken"]=0}}
+this.MESSAGE_GENERATION={
+  [StrCode32"GameObject"]={
+    [StrCode32"Fulton"]=0,
+    [StrCode32"VehicleBroken"]=0
+  }
+}
 this.DEFAULT_MESSAGE_GENERATION=1
 this.ELAPSED_MISSION_COUNT_MAX=14
-this.ELAPSED_MISSION_COUNT={INIT=-127,DONE_EVENT=-1,NOW_OCCURRING=0}
-this.ELAPSED_QUEST_COUNT={INIT=-127,DONE_EVENT=-1,NOW_OCCURRING=0}
-this.MISSION_START_RECOVER_DEMO_TYPE={NONE=0,VEHICLE=1,WALKER_GEAR=2}
-this.REWARD_MAX={MISSION=16,MB_MANAGEMENT=64,QUEST=8}
-this.REWARD_PARAM={TYPE=0,ARG1=1,ARG2=2,MAX=3}
-this.TRAP_TYPE=this.Enum{"NORMAL","TRIGGER"}
-this.TRAP_STATE=this.Enum{"ENABLE","DISABLE"}
-this.HOSTAGE_GM_TYPE=this.Enum{TppGameObject.GAME_OBJECT_TYPE_HOSTAGE2,TppGameObject.GAME_OBJECT_TYPE_HOSTAGE_UNIQUE,TppGameObject.GAME_OBJECT_TYPE_HOSTAGE_UNIQUE2}
-this.FULTONABLE_GIMMICK_TYPE=this.Enum{TppGameObject.GAME_OBJECT_TYPE_GATLINGGUN,TppGameObject.GAME_OBJECT_TYPE_MORTAR,TppGameObject.GAME_OBJECT_TYPE_MACHINEGUN}
-this.QUEST_MINE_TYPE_LIST={TppEquip.EQP_SWP_DMine,TppEquip.EQP_SWP_DMine_G01,TppEquip.EQP_SWP_DMine_G02}
+this.ELAPSED_MISSION_COUNT={
+  INIT=-127,
+  DONE_EVENT=-1,
+  NOW_OCCURRING=0
+}
+this.ELAPSED_QUEST_COUNT={
+  INIT=-127,
+  DONE_EVENT=-1,
+  NOW_OCCURRING=0
+}
+this.MISSION_START_RECOVER_DEMO_TYPE={
+  NONE=0,
+  VEHICLE=1,
+  WALKER_GEAR=2
+}
+this.REWARD_MAX={
+  MISSION=16,
+  MB_MANAGEMENT=64,
+  QUEST=8
+}
+this.REWARD_PARAM={
+  TYPE=0,
+  ARG1=1,
+  ARG2=2,
+  MAX=3
+}
+this.TRAP_TYPE=this.Enum{
+  "NORMAL",
+  "TRIGGER"
+}
+this.TRAP_STATE=this.Enum{
+  "ENABLE",
+  "DISABLE"
+}
+this.HOSTAGE_GM_TYPE=this.Enum{
+  TppGameObject.GAME_OBJECT_TYPE_HOSTAGE2,
+  TppGameObject.GAME_OBJECT_TYPE_HOSTAGE_UNIQUE,
+  TppGameObject.GAME_OBJECT_TYPE_HOSTAGE_UNIQUE2
+}
+this.FULTONABLE_GIMMICK_TYPE=this.Enum{
+  TppGameObject.GAME_OBJECT_TYPE_GATLINGGUN,
+  TppGameObject.GAME_OBJECT_TYPE_MORTAR,
+  TppGameObject.GAME_OBJECT_TYPE_MACHINEGUN
+}
+this.QUEST_MINE_TYPE_LIST={
+  TppEquip.EQP_SWP_DMine,
+  TppEquip.EQP_SWP_DMine_G01,
+  TppEquip.EQP_SWP_DMine_G02
+}
 this.BUDDY_GM_TYPE_TO_BUDDY_TYPE={
   [TppGameObject.GAME_OBJECT_TYPE_HORSE2]=BuddyType.HORSE,
   [TppGameObject.GAME_OBJECT_TYPE_BUDDYQUIET2]=BuddyType.QUIET,
@@ -90,7 +134,16 @@ this.ANIMAL_GAMEOBJECT_TYPE=this.Enum{
   TppGameObject.GAME_OBJECT_TYPE_JACKAL,
   TppGameObject.GAME_OBJECT_TYPE_BEAR
 }
-this.MISSION_CLEAR_STATE_LIST={"INIT","NOT_CLEARED_YET","ESTABLISHED_CLEAR","MISSION_GAME_END","SHOW_CREDIT_END","BLACK_TELEPHOHE_END","REWARD_END","MISSION_FINALIZED"}
+this.MISSION_CLEAR_STATE_LIST={
+  "INIT",
+  "NOT_CLEARED_YET",
+  "ESTABLISHED_CLEAR",
+  "MISSION_GAME_END",
+  "SHOW_CREDIT_END",
+  "BLACK_TELEPHOHE_END",
+  "REWARD_END",
+  "MISSION_FINALIZED"
+}
 this.MISSION_CLEAR_STATE=this.Enum(this.MISSION_CLEAR_STATE_LIST)
 this.ERROR_ID={
   CONFIRM_AUTO_SAVE=1e3,
@@ -145,8 +198,22 @@ this.UI_STATUS_TYPE_ALL={
   AtTime="INVALID",
   InfoTypingText="INVALID"
 }
-this.GAME_STATUS_TYPE_ALL={S_DISABLE_PLAYER_PAD=true,S_DISABLE_NPC=true,S_DISABLE_TARGET=true,S_DISABLE_NPC_NOTICE=true,S_DISABLE_PLAYER_DAMAGE=true,S_DISABLE_THROWING=true,S_DISABLE_PLACEMENT=true}
-this.SAVE_FILE_LOAD_RESULT=this.Enum{"NOT_EXIST_FILE","OK","OK_LOAD_BACKUP","DIFFER_FROM_CURRENT_VERSION","ERROR_LOAD_FAILED"}
+this.GAME_STATUS_TYPE_ALL={
+  S_DISABLE_PLAYER_PAD=true,
+  S_DISABLE_NPC=true,
+  S_DISABLE_TARGET=true,
+  S_DISABLE_NPC_NOTICE=true,
+  S_DISABLE_PLAYER_DAMAGE=true,
+  S_DISABLE_THROWING=true,
+  S_DISABLE_PLACEMENT=true
+}
+this.SAVE_FILE_LOAD_RESULT=this.Enum{
+  "NOT_EXIST_FILE",
+  "OK",
+  "OK_LOAD_BACKUP",
+  "DIFFER_FROM_CURRENT_VERSION",
+  "ERROR_LOAD_FAILED"
+}
 this.SAVE_FILE_LOAD_RESULT.INIT=-1
 this.SAVE_SLOT={
   GLOBAL=0,
@@ -272,15 +339,102 @@ this.MISSION_ENUM=this.Enum(this.MISSION_LIST)
 if Mission.RegisterMissionCodeList then
   Mission.RegisterMissionCodeList{codeList=this.MISSION_LIST}
 end
-this.HARD_MISSION_LIST={"11043","11041","11054","11085","11082","11090","11036","11033","11050","11091","11195","11211","11140","11200","11080","11171","11121","11115","11130","11044","11052","11151"}
+this.HARD_MISSION_LIST={
+  "11043",
+  "11041",
+  "11054",
+  "11085",
+  "11082",
+  "11090",
+  "11036",
+  "11033",
+  "11050",
+  "11091",
+  "11195",
+  "11211",
+  "11140",
+  "11200",
+  "11080",
+  "11171",
+  "11121",
+  "11115",
+  "11130",
+  "11044",
+  "11052",
+  "11151"
+}
 this.HARD_MISSION_ENUM=this.Enum(this.HARD_MISSION_LIST)
-this.MISSING_NUMBER_MISSION_LIST={"11041","11085","11036","11091","11195","11211","11200","11171","11115","11052","10230"}
+this.MISSING_NUMBER_MISSION_LIST={
+  "11041",
+  "11085",
+  "11036",
+  "11091",
+  "11195",
+  "11211",
+  "11200",
+  "11171",
+  "11115",
+  "11052",
+  "10230"
+}
 this.MISSING_NUMBER_MISSION_ENUM=this.Enum(this.MISSING_NUMBER_MISSION_LIST)
-this.SYS_MISSION_ID={INIT=1,TITLE=5,AFGH_FREE=30010,MAFR_FREE=30020,MTBS_FREE=30050,MTBS_ZOO=30150,MTBS_WARD=30250,AFGH_HELI=40010,MAFR_HELI=40020,MTBS_HELI=40050,HELI_SPACE=40060,FOB=50050,SELECT=6e4}
-this.NO_ORDER_BOX_MISSION_LIST={"10010","10020","10030","10050","11050","10070","10080","11080","10115","11115","10140","11140","10150","10151","11151","10240","10260","10280"}
+this.SYS_MISSION_ID={
+  INIT=1,
+  TITLE=5,
+  AFGH_FREE=30010,
+  MAFR_FREE=30020,
+  MTBS_FREE=30050,
+  MTBS_ZOO=30150,
+  MTBS_WARD=30250,
+  AFGH_HELI=40010,
+  MAFR_HELI=40020,
+  MTBS_HELI=40050,
+  HELI_SPACE=40060,
+  FOB=50050,
+  SELECT=6e4
+}
+this.NO_ORDER_BOX_MISSION_LIST={
+  "10010",
+  "10020",
+  "10030",
+  "10050",
+  "11050",
+  "10070",
+  "10080",
+  "11080",
+  "10115",
+  "11115",
+  "10140",
+  "11140",
+  "10150",
+  "10151",
+  "11151",
+  "10240",
+  "10260",
+  "10280"
+}
 this.NO_ORDER_BOX_MISSION_ENUM=this.Enum(this.NO_ORDER_BOX_MISSION_LIST)
-this.NO_ORDER_FIX_HELICOPTER_ROUTE={[10240]="rt_drp_mbqf_N",[10260]="drp_s10260"}
-this.NO_HELICOPTER_ROUTE_MISSION_LIST={"10010","10020","10030","10050","11050","10070","10080","11080","10140","11140","10150","10151","11151","10240","10280"}
+this.NO_ORDER_FIX_HELICOPTER_ROUTE={
+  [10240]="rt_drp_mbqf_N",
+  [10260]="drp_s10260"
+}
+this.NO_HELICOPTER_ROUTE_MISSION_LIST={
+  "10010",
+  "10020",
+  "10030",
+  "10050",
+  "11050",
+  "10070",
+  "10080",
+  "11080",
+  "10140",
+  "11140",
+  "10150",
+  "10151",
+  "11151",
+  "10240",
+  "10280"
+}
 this.NO_HELICOPTER_ROUTE_ENUM=this.Enum(this.NO_HELICOPTER_ROUTE_MISSION_LIST)
 this.NO_HELICOPTER_MISSION_START_POSITION={
   [10010]={-39.127,106.175,-1719.5},
@@ -322,10 +476,95 @@ this.EMERGENCY_MISSION_ENUM=this.Enum(this.EMERGENCY_MISSION_LIST)
 --Also see and TppLocation.GetLocationName
 this.LOCATION_HAVE_MISSION_LIST={
   INIT={5},
-  AFGH={10020,10033,10034,10036,10040,10041,10043,10044,10045,10050,10052,10054,10060,10070,10150,10151,10153,10156,10164,10199,10260,30010,40010,65020,11036,11043,11041,11033,11050,11054,11044,11052,11151},
-  MAFR={10080,10081,10082,10085,10086,10090,10091,10093,10100,10110,10120,10121,10130,10140,10154,10160,10162,10171,10200,10195,10211,30020,40020,65060,11085,11082,11090,11091,11195,11211,11140,11200,11080,11171,11121,11130},
-  CYPR={10010,10280},
-  MTBS={10030,10115,11115,10240,30050,30150,30250,40050,50050,65030},
+  AFGH={
+    10020, --story
+    10033,
+    10034, -- ??
+    10036,
+    10040,
+    10041,
+    10043,
+    10044,
+    10045,
+    10050,
+    10052,
+    10054,
+    10060, -- ??
+    10070,
+    10150,
+    10151,
+    10153, -- ??
+    10156,
+    10164, -- ??
+    10199, -- ??
+    10260,
+    30010, --free
+    40010, --heli
+    65020, --show
+    11036, --hard
+    11043,
+    11041,
+    11033,
+    11050,
+    11054,
+    11044,
+    11052,
+    11151
+  },
+  MAFR={
+    10080, --story
+    10081,
+    10082,
+    10085,
+    10086,
+    10090,
+    10091,
+    10093,
+    10100,
+    10110,
+    10120,
+    10121,
+    10130,
+    10140,
+    10154, -- ??
+    10160, -- ??
+    10162, -- ??
+    10171,
+    10200,
+    10195,
+    10211,
+    30020, --free
+    40020, --heli
+    65060, --show
+    11085, --hard
+    11082,
+    11090,
+    11091,
+    11195,
+    11211,
+    11140,
+    11200,
+    11080,
+    11171,
+    11121,
+    11130
+  },
+  CYPR={
+    10010,
+    10280
+  },
+  MTBS={
+    10030, --story
+    10115,
+    11115,
+    10240,
+    30050, --free
+    30150,
+    30250,
+    40050, --heli
+    50050, --online
+    65030 --show
+  },
   OMBS={},
   HLSP={40060},
   FLYK={10230}
@@ -352,6 +591,7 @@ this.STORY_MISSION_CLUSTER_ID={
   [30250]=7
 }
 this.INVALID_CLUSTER_ID=255
+--rlc TppStory.storySequenceTable index enum
 this.STORY_SEQUENCE_LIST={
   "STORY_START",
   "CLEARD_ESCAPE_THE_HOSPITAL",
@@ -500,8 +740,16 @@ for name,packPath in pairs(this.SOLIDER2_COMMON_PACK)do
   end
 end
 this.DEFAULT_SOLIDER2_COMMON_PACKAGE=StrCode32"default"
-this.SOLIDER2_COMMON_PACK_PREREQUISITES={s10150_special={"mission_block"},s10151_special={"mission_block"},s10151_ending={"mission_block"}}
-this.AFR_ARMOR={TYPE_CFA=1,TYPE_ZRS=2,TYPE_RC=3}
+this.SOLIDER2_COMMON_PACK_PREREQUISITES={
+  s10150_special={"mission_block"},
+  s10151_special={"mission_block"},
+  s10151_ending={"mission_block"}
+}
+this.AFR_ARMOR={
+  TYPE_CFA=1,
+  TYPE_ZRS=2,
+  TYPE_RC=3
+}
 this.QUEST_DEFINE={
   "waterway_q99010",--quiet fight
   "waterway_q99012",
@@ -737,17 +985,52 @@ this.REMOVAL_TROPHY_QUEST=this.Enum{
   "banana_q60023",
   "outland_q60024"
 }
-this.QUEST_TYPE={STORY=1,RECOVERED=2,ELIMINATE=3,ANIMAL_RECOVERED=4,DEVELOP_RECOVERED=5,GIMMICK_RECOVERED=6,MSF_RECOVERED=7,SHOOTING_PRACTIVE=8}
-this.QUEST_CLEAR_TYPE={NONE=1,CLEAR=2,FAILURE=3,UPDATE=4,SHOOTING_CLEAR=5,SHOOTING_RETRY=6}
-this.QUEST_RACE_TYPE={CAUCASIAN=0,BROWN=1,BLACK=2,ASIA=3}
-this.QUEST_GENDER_TYPE={MAN=0,WOMAN=1}
+this.QUEST_TYPE={
+  STORY=1,
+  RECOVERED=2,
+  ELIMINATE=3,
+  ANIMAL_RECOVERED=4,
+  DEVELOP_RECOVERED=5,
+  GIMMICK_RECOVERED=6,
+  MSF_RECOVERED=7,
+  SHOOTING_PRACTIVE=8
+}
+this.QUEST_CLEAR_TYPE={
+  NONE=1,
+  CLEAR=2,
+  FAILURE=3,
+  UPDATE=4,
+  SHOOTING_CLEAR=5,
+  SHOOTING_RETRY=6
+}
+this.QUEST_RACE_TYPE={
+  CAUCASIAN=0,
+  BROWN=1,
+  BLACK=2,
+  ASIA=3
+}
+this.QUEST_GENDER_TYPE={
+  MAN=0,
+  WOMAN=1
+}
 if#this.QUEST_DEFINE>this.QUEST_MAX then
 end
 this.QUEST_INDEX=this.Enum(this.QUEST_DEFINE)
 if#this.QUEST_RANDOM_FACE_DEFINE>this.QUEST_FACE_MAX then
 end
 this.QUEST_RANDOM_FACE_INDEX=this.Enum(this.QUEST_RANDOM_FACE_DEFINE)
-this.QUEST_RANK_LIST={"S","A","B","C","D","E","F","G","H","I"}
+this.QUEST_RANK_LIST={
+  "S",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I"
+}
 this.QUEST_RANK=Tpp.Enum(this.QUEST_RANK_LIST)
 this.QUEST_BONUS_GMP={
   [this.QUEST_RANK.S]=300000,
@@ -963,10 +1246,22 @@ this.QUEST_FACE_ID_LIST={
   AFGH_BALACLAVA=TppEnemyFaceId.svs_balaclava,
   MAFR_BALACLAVA=TppEnemyFaceId.pfs_balaclava
 }
-this.MISSION_CLEAR_RANK_LIST={"S","A","B","C","D","E"}
+this.MISSION_CLEAR_RANK_LIST={
+  "S",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E"
+}
 this.MISSION_CLEAR_RANK=Tpp.Enum(this.MISSION_CLEAR_RANK_LIST)
 this.MISSION_CLEAR_RANK.NOT_DEFINED=0
-this.INITIAL_PLAYER_STATE={MIN=0,ON_FOOT=1,RIDEON_HELICOPTER=2,MAX=3}
+this.INITIAL_PLAYER_STATE={
+  MIN=0,
+  ON_FOOT=1,
+  RIDEON_HELICOPTER=2,
+  MAX=3
+}
 this.MB_FREEPLAY_DEMO_PRIORITY_LIST={
   "GoToMotherBaseAfterQuietBattle",
   "ArrivedMotherBaseAfterQuietBattle",
@@ -1039,12 +1334,31 @@ this.FORCE_MB_RETURN_RADIO_LIST={
   "QuietReceivesPersecutionRadio"
 }
 this.FORCE_MB_RETURN_RADIO_ENUM=this.Enum(this.FORCE_MB_RETURN_RADIO_LIST)
-this.S10100_BOY_LIST={"Collect_Injury","Collect_YellowHood","Collect_Aflo","Collect_ShortAflo","Collect_BlackCoat"}
+this.S10100_BOY_LIST={
+  "Collect_Injury",
+  "Collect_YellowHood",
+  "Collect_Aflo",
+  "Collect_ShortAflo",
+  "Collect_BlackCoat"
+}
 this.S10100_BOY_ENUM=this.Enum(this.S10100_BOY_LIST)
-this.MB_FREEPLAY_DEMO_REQUESTFLAG_LIST={"PlayAfterQuietBattle","PlayAfterDethFactory","PlayAfterWhiteMamba"}
+this.MB_FREEPLAY_DEMO_REQUESTFLAG_LIST={
+  "PlayAfterQuietBattle",
+  "PlayAfterDethFactory",
+  "PlayAfterWhiteMamba"
+}
 this.MB_FREEPLAY_DEMO_REQUESTFLAG_DEFINE=this.Enum(this.MB_FREEPLAY_DEMO_REQUESTFLAG_LIST)
-this.MB_FREEPLAY_LARGEDEMO={"GoToMotherBaseAfterQuietBattle","NuclearEliminationCeremony","DecisionHuey","InterrogateQuiet","TheGreatEscapeLiquid"}
-this.MB_FREEPLAY_RIDEONHELI_DEMO={"DdogGoWithMe","QuietWishGoMission"}
+this.MB_FREEPLAY_LARGEDEMO={
+  "GoToMotherBaseAfterQuietBattle",
+  "NuclearEliminationCeremony",
+  "DecisionHuey",
+  "InterrogateQuiet",
+  "TheGreatEscapeLiquid"
+}
+this.MB_FREEPLAY_RIDEONHELI_DEMO={
+  "DdogGoWithMe",
+  "QuietWishGoMission"
+}
 this.MB_FREEPLAY_RIDEONHELI_DEMO_DEFINE=this.Enum(this.MB_FREEPLAY_RIDEONHELI_DEMO)
 this.GAME_OVER_TYPE={
   PLAYER_DEAD=1,
@@ -1116,7 +1430,11 @@ this.GAME_OVER_S10020_TARGET_TIMEOVERDEAD_DEMO_TIME=25
 this.GAME_OVER_S10030_SHOT_OCELOT_BY_TULLET_TIME=1
 this.GAME_OVER_S10090_TARGET_DEAD_TIME=4
 this.GAME_OVER_S10090_TARGET_FULTON_FAILED_TIME=4
-this.FOB_DEFENCE_GAME_OVER_TYPE={INIT=0,PLAYER_DEAD=1,HOST_ENTER_GOAL=2}
+this.FOB_DEFENCE_GAME_OVER_TYPE={
+  INIT=0,
+  PLAYER_DEAD=1,
+  HOST_ENTER_GOAL=2
+}
 this.COMMON_RADIO={
   ENEMY_RECOVERED=1,
   HOSTAGE_RECOVERED=2,
@@ -1212,24 +1530,408 @@ this.INIT_ELAPSED_MISSION_COUNT={
   STORY_SEQUENCE=2
 }
 this.QUIET_REUNION_MISSION_COUNT=6--RETAILPATCH 1006 added
-this.WEAPONSLOT={MIN=0,PRIMARY_HIP=0,PRIMARY_BACK=1,SECONDARY=2,SUPPORT_0=3,SUPPORT_1=4,SUPPORT_2=5,SUPPORT_3=6,SUPPORT_4=7,SUPPORT_5=8,SUPPORT_6=9,SUPPORT_7=10,MAX=11,GUN_WEAPON_MAX=4}
+this.WEAPONSLOT={
+  MIN=0,
+  PRIMARY_HIP=0,
+  PRIMARY_BACK=1,
+  SECONDARY=2,
+  SUPPORT_0=3,
+  SUPPORT_1=4,
+  SUPPORT_2=5,
+  SUPPORT_3=6,
+  SUPPORT_4=7,
+  SUPPORT_5=8,
+  SUPPORT_6=9,
+  SUPPORT_7=10,
+  MAX=11,
+  GUN_WEAPON_MAX=4
+}
 this.HONEY_BEE_EQUIP_ID=TppEquip.EQP_WP_HoneyBee
-this.INIT_MAG={ASSAULT_DEFAULT=8,MACHINEGUN_DEFAULT=3,SHOTGUN_DEFAULT=10,SNIPER_DEFAULT=10,MISSILE_DEFAULT=4,HANDGAN_DEFAULT=10,SUBMACHINEGUN_DEFAULT=10}
-this.SCRIPT_BLOCK_STATE={MIN=0,EMPTY=1,ALLOCATED=1,INITIALIZED=2,ACTIVATE_REQUESTED=3,WAITING_ACTIVATE=4,ACTIVATED=5,MAX=6}
+this.INIT_MAG={
+  ASSAULT_DEFAULT=8,
+  MACHINEGUN_DEFAULT=3,
+  SHOTGUN_DEFAULT=10,
+  SNIPER_DEFAULT=10,
+  MISSILE_DEFAULT=4,
+  HANDGAN_DEFAULT=10,
+  SUBMACHINEGUN_DEFAULT=10
+}
+this.SCRIPT_BLOCK_STATE={
+  MIN=0,
+  EMPTY=1,
+  ALLOCATED=1,
+  INITIALIZED=2,
+  ACTIVATE_REQUESTED=3,
+  WAITING_ACTIVATE=4,
+  ACTIVATED=5,
+  MAX=6
+}
 this.HOSTAGE_UNLOCK_START=0
 this.HOSTAGE_UNLOCK_FINISH=1
 this.STOCK_DIRECTION_RIGHT=0
 this.STOCK_DIRECTION_LEFT=1
-this.TIPS={TIPS=1,R3_ZOOM=2,COVER=3,COVER_SHOOT=4,QUICK_DIVE=5,REFLEX_MODE=6,WEAPON_RANGE=7,RETICLE_COLOR=8,RELOAD=9,STOCK_CHANGE=10,INJURY=11,AUTO_AIM=12,VIEWPOINT_WEAPON=13,TAKE_DOWN=14,BASIC=15,SPOTTED=16,INFILTRATING=17,BINO_MARKING=18,PUT_MARKER=19,RADIO_ESPIONAGE=20,LOG=21,COMOF_STANCE=22,STEALTH_MODE=23,TRASH=24,TOILET=25,HORSE_HIDEACTION=26,ACTION_MAKENOISE=27,CALL_MENU=28,TRANQUILIZER=29,PICKUP_WEAPON=30,AMMO=31,CARRY_WEAPON_LIMIT=32,HOLD_UP=33,SUPPRESSOR=34,THROW_EQUIP=35,NVG=36,BINOCULARS=37,AUDIO_CUE=38,MARKING=39,NIGHT=40,COMBAT_ALERT=41,ELUDE=42,QUICK_CHANGE=43,CQC=44,CQC_THROW=45,CQC_ATTACK=46,CQC_HOLD_UP=47,CQC_COMB=48,CQC_HOLD=49,CQC_INTERROGATION=50,CQC_CHOKE=51,CQC_KILL=52,HOLD_UP_INTERROGATION=53,GET_DOWN=54,INTERPRETER=55,FREE_RUN=56,DAY_NIGHT_SHIFT=57,COMOF_NIGHT=58,COMOF_INGRASS=59,SAND_STORM=60,COMOF_VEHICLE=61,TRACK_HIDE=62,ROLLING=63,CRACK_CLIMB=64,BULLET_PENETRATE=65,NON_LETHAL_BULLET=66,BULLET_REFILL=67,SUPPLY_WEAPON=68,SUPPORT_HELI=69,ACC=70,TACTICAL_BUDDY=71,BUDDY_COMMAND=72,BUDDY_HORSE=73,ANIMALS=74,SAVE_ANIMAL=75,PLANT=76,DIAMOND=77,MATERIAL=78,COMMUNICATOR=79,ELECTRICITY=80,RADAR=81,SEARCH_LIGHT=82,GUN_LIGHT=83,SNIPER_RIFLE=84,FLARE_GRENADE=85,ITEM=86,CARDBOARD_BOX=87,PHANTOM_CIGAR_TOILET=88,MICROPHONE=89,MB_DEVICE=90,FULLTON_DEVICE=91,SHOWER_ROOM=92,MB_CLASS_FUNCTION=93,FULTON_CLASS_FUNCTION_STOP=94,GMP=95,LOSS_GMP=96,RANK=97,MORALE=98,EMBLEM=99,RECO_TRANQUILIZER=100,FREE=101,SKILL=102,WOOD_BOX=103,RED_DRUMS=104,FOG=105,MAP_SHORTCUT=106,FULLTON_RECOVERY=107,FULTON_MACHINEGUN=108,DEV_DOCUMENT=109,BOX_MOVE=110,SUPPORT_ATTACK=111,HEROISM=112,CODENAMES=113,DEVELOPMENT=114,TANK=115,GUNSHIP=116,BUDDY_DOG=117,DECOY=118,MINE=119,ACTIVE_SONAR=120,BUDDY_WALKER=121,FULTON_COMMON_VEHICLE=122,FULTON_CONTAINER=123,RAIN=124,UNDER_BARREL=125,BUDDY_QUIET=126,SLEEP_GUS=127,TROUBLE=128,FOB_WORM_HOLE=129,INJURY_2=130,BULLET_PENETRATE_FAIL=131,ANIMAL_CAGE=132,FULTON_MORTAR=133,FULTON_ANTI_AIRCRAFT=134,PHANTOM_CIGAR_TRASH=135,FOB_ABILITY=136,WORM_HOLE=137,FOB_SHIELD=138,ESP_POINT=139,STAFF_RANK_BONUS=140,FOB_GOAL=141,FOB_GOAL_BONUS=142,DIRECT_CONTRACTS=143,REVENGE_WORM_HOLE=144,NUCLEAR_WEAPON=145,FOB_HERO=146,EQUIPPED_GUARDS=147,PF_RATING=148,PF_POINT=149,FOB_SUPPORT=150,FOB_RESCUE_STAFF=151,EMERGENCES=152,FOB_CONSTRUCT=153,ONLINE_DISPATCH_MISSION=154}
-this.TIPS_REDUNDANT_REF={[this.TIPS.INJURY_2]=this.TIPS.INJURY,[this.TIPS.BULLET_PENETRATE_FAIL]=this.TIPS.BULLET_PENETRATE,[this.TIPS.ANIMAL_CAGE]=this.TIPS.SAVE_ANIMAL,[this.TIPS.FULTON_MORTAR]=this.TIPS.FULTON_MACHINEGUN,[this.TIPS.FULTON_ANTI_AIRCRAFT]=this.TIPS.FULTON_MACHINEGUN,[this.TIPS.PHANTOM_CIGAR_TRASH]=this.TIPS.PHANTOM_CIGAR_TOILET}
-this.CONTINUE_TIPS_TABLE={[this.STORY_SEQUENCE.STORY_START]={"BASIC","SPOTTED"},[this.STORY_SEQUENCE.CLEARD_ESCAPE_THE_HOSPITAL]={"AUDIO_CUE","MARKING","NIGHT","COMBAT_ALERT"},[this.STORY_SEQUENCE.CLEARD_TO_MATHER_BASE]={"TRANQUILIZER"},[this.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON]={"DEVELOPMENT","GUNSHIP","TANK"}}
-this.CONTROL_GUIDE={MB_DEVICE=1,BINO=2,BINO_ZOOM=3,OPTIONALRADIO=4,CUSTUMMARKER=5,ADVICE=6,HORSE_CALL=7,HORSE_HIDE=8,HORSE_HIDE_CHANGE=9,HORSE_RUN=10,HORSE_RIDEON=11,HORSE_GETOFF=12,GET_INTEL=13,ATTACK=14,RELOAD=15,CURE=16,JUMP=17,STANCE=18,LOOK_IN=19,ELUDE_UP=20,ELUDE_DOWN=21,CLIMEB_UP=22,ROLLING=23,COVER_ATTACK=24,SHOULDER=25,SHOULDER_THROW=26,HULTON=27,PIPE_UP=28,FREECLIMD=29,GARBAGEBOX_HIDE=30,CQC=31,CQC_PUNCH=32,CQC_THROW=33,RESTRAINT2=34,NONE=35,INTERROGATION=36,SWOON=37,KILL=38,C4_SET=39,C4_EXPLODING=40,ACCELARATER=41,BRAKE=42,HELI_RIDEON=43,HELI_GETOFF=44,CQC_COMBO=45,EQUIPMENT_WP=46,CAMERA_MOVE=47,CAMERA_ZOOM=48,CAMERA_CHANGE=49,PLAY_MOVE=50,PLAY_COVER=51,PLAY_DASH=52,PLAY_EVADE=53,ORDER_CHILD=54,MACHINEGUN=55,MORTAR=56,ANTI_AIRCRAFT=57,SEARCH_LIGHT=58,UNDER_BARREL=59,MOVE_IN_HELI=60,BOOSTER_SCOPE=61,DRIVE_COMMON_VEHICLE=62,DRIVE_WALKER_GEAR=63,RIDE_HORSE=64,SNIPER_RIFLE=65,SHIELD=66,STANCE_SQUAT=67,STANCE_CRAWL=68,STEP_FENCE=69,ATTACK_VEHICLE_SHOOT=70,ATTACK_VEHICLE_CAMERA=71,VEHICLE_LIGHT=72}
-this.PAUSE_CONTROL_GUIDE={[this.CONTROL_GUIDE.DRIVE_COMMON_VEHICLE]="vehicle",[this.CONTROL_GUIDE.DRIVE_WALKER_GEAR]="walker-gear",[this.CONTROL_GUIDE.RIDE_HORSE]="horse"}
-this.CONTROL_GUIDE_LANG_ID_LIST={"tutorial_mb_device","tutorial_bino","tutorial_bino_zoom","tutorial_optionalradio","tutorial_set_marker","tutorial_advice","tutorial_horse_call","tutorial_horse_hide","tutorial_horse_hide_change","tutorial_horse_run","tutorial_horse_rideon","tutorial_horse_getoff","tutorial_get_intel","tutorial_attack","tutorial_reload","tutorial_cure","tutorial_jump","tutorial_stance","tutorial_look_in","tutorial_elude_up","tutorial_elude_down","tutorial_climeb_up","tutorial_rolling","tutorial_cover_attack","tutorial_shoulder","tutorial_shoulder_throw","tutorial_hulton","tutorial_pipe","tutorial_cliff","tutorial_garbagebox_hide","tutorial_cqc","tutorial_cqc_punch","tutorial_cqc_throw","tutorial_restraint2","","tutorial_interrogation","tutorial_swoon","tutorial_kill","tutorial_C4_set","tutorial_C4_exploding","tutorial_accelarater","tutorial_brake","tutorial_heli_rideon","tutorial_heli_getoff","tutorial_cqc_combo","tutorial_equipment_wp","tutorial_camera_move","tutorial_camera_zoom","tutorial_camera_change","tutorial_play_move","tutorial_play_cover","tutorial_play_dash","tutorial_play_evade","tutorial_order_child","tutorial_attack_machinegun","tutorial_attack_mortar","tutorial_attack_anti_aircraft","tutorial_searchlight_onoff","tutorial_change_barrel","tutorial_play_move","tutorial_bino_zoom","tutorial_show_controller","tutorial_show_controller","tutorial_show_controller","tutorial_change_camera","tutorial_shield2","tutorial_stance3","tutorial_stance2","tutorial_fence_jump","tutorial_v_attack","tutorial_v_fps_tps","tutorial_searchlight_onoff"}
-this.GMP_COST_TYPE={FULTON=1,SUPPORT_SUPPLY=2,SUPPORT_ATTACK=3,CALL_HELLI=4,BUDDY=5,CLEAR_SIDE_OPS=6,DESTROY_SUPPORT_HELI=7}
-this.CLUSTER_NAME={"Command","Combat","Develop","Support","Medical","Spy","BaseDev"}
+this.TIPS={
+  TIPS=1,
+  R3_ZOOM=2,
+  COVER=3,
+  COVER_SHOOT=4,
+  QUICK_DIVE=5,
+  REFLEX_MODE=6,
+  WEAPON_RANGE=7,
+  RETICLE_COLOR=8,
+  RELOAD=9,
+  STOCK_CHANGE=10,
+  INJURY=11,
+  AUTO_AIM=12,
+  VIEWPOINT_WEAPON=13,
+  TAKE_DOWN=14,
+  BASIC=15,
+  SPOTTED=16,
+  INFILTRATING=17,
+  BINO_MARKING=18,
+  PUT_MARKER=19,
+  RADIO_ESPIONAGE=20,
+  LOG=21,
+  COMOF_STANCE=22,
+  STEALTH_MODE=23,
+  TRASH=24,
+  TOILET=25,
+  HORSE_HIDEACTION=26,
+  ACTION_MAKENOISE=27,
+  CALL_MENU=28,
+  TRANQUILIZER=29,
+  PICKUP_WEAPON=30,
+  AMMO=31,
+  CARRY_WEAPON_LIMIT=32,
+  HOLD_UP=33,
+  SUPPRESSOR=34,
+  THROW_EQUIP=35,
+  NVG=36,
+  BINOCULARS=37,
+  AUDIO_CUE=38,
+  MARKING=39,
+  NIGHT=40,
+  COMBAT_ALERT=41,
+  ELUDE=42,
+  QUICK_CHANGE=43,
+  CQC=44,
+  CQC_THROW=45,
+  CQC_ATTACK=46,
+  CQC_HOLD_UP=47,
+  CQC_COMB=48,
+  CQC_HOLD=49,
+  CQC_INTERROGATION=50,
+  CQC_CHOKE=51,
+  CQC_KILL=52,
+  HOLD_UP_INTERROGATION=53,
+  GET_DOWN=54,
+  INTERPRETER=55,
+  FREE_RUN=56,
+  DAY_NIGHT_SHIFT=57,
+  COMOF_NIGHT=58,
+  COMOF_INGRASS=59,
+  SAND_STORM=60,
+  COMOF_VEHICLE=61,
+  TRACK_HIDE=62,
+  ROLLING=63,
+  CRACK_CLIMB=64,
+  BULLET_PENETRATE=65,
+  NON_LETHAL_BULLET=66,
+  BULLET_REFILL=67,
+  SUPPLY_WEAPON=68,
+  SUPPORT_HELI=69,
+  ACC=70,
+  TACTICAL_BUDDY=71,
+  BUDDY_COMMAND=72,
+  BUDDY_HORSE=73,
+  ANIMALS=74,
+  SAVE_ANIMAL=75,
+  PLANT=76,
+  DIAMOND=77,
+  MATERIAL=78,
+  COMMUNICATOR=79,
+  ELECTRICITY=80,
+  RADAR=81,
+  SEARCH_LIGHT=82,
+  GUN_LIGHT=83,
+  SNIPER_RIFLE=84,
+  FLARE_GRENADE=85,
+  ITEM=86,
+  CARDBOARD_BOX=87,
+  PHANTOM_CIGAR_TOILET=88,
+  MICROPHONE=89,
+  MB_DEVICE=90,
+  FULLTON_DEVICE=91,
+  SHOWER_ROOM=92,
+  MB_CLASS_FUNCTION=93,
+  FULTON_CLASS_FUNCTION_STOP=94,
+  GMP=95,
+  LOSS_GMP=96,
+  RANK=97,
+  MORALE=98,
+  EMBLEM=99,
+  RECO_TRANQUILIZER=100,
+  FREE=101,
+  SKILL=102,
+  WOOD_BOX=103,
+  RED_DRUMS=104,
+  FOG=105,
+  MAP_SHORTCUT=106,
+  FULLTON_RECOVERY=107,
+  FULTON_MACHINEGUN=108,
+  DEV_DOCUMENT=109,
+  BOX_MOVE=110,
+  SUPPORT_ATTACK=111,
+  HEROISM=112,
+  CODENAMES=113,
+  DEVELOPMENT=114,
+  TANK=115,
+  GUNSHIP=116,
+  BUDDY_DOG=117,
+  DECOY=118,
+  MINE=119,
+  ACTIVE_SONAR=120,
+  BUDDY_WALKER=121,
+  FULTON_COMMON_VEHICLE=122,
+  FULTON_CONTAINER=123,
+  RAIN=124,
+  UNDER_BARREL=125,
+  BUDDY_QUIET=126,
+  SLEEP_GUS=127,
+  TROUBLE=128,
+  FOB_WORM_HOLE=129,
+  INJURY_2=130,
+  BULLET_PENETRATE_FAIL=131,
+  ANIMAL_CAGE=132,
+  FULTON_MORTAR=133,
+  FULTON_ANTI_AIRCRAFT=134,
+  PHANTOM_CIGAR_TRASH=135,
+  FOB_ABILITY=136,
+  WORM_HOLE=137,
+  FOB_SHIELD=138,
+  ESP_POINT=139,
+  STAFF_RANK_BONUS=140,
+  FOB_GOAL=141,
+  FOB_GOAL_BONUS=142,
+  DIRECT_CONTRACTS=143,
+  REVENGE_WORM_HOLE=144,
+  NUCLEAR_WEAPON=145,
+  FOB_HERO=146,
+  EQUIPPED_GUARDS=147,
+  PF_RATING=148,
+  PF_POINT=149,
+  FOB_SUPPORT=150,
+  FOB_RESCUE_STAFF=151,
+  EMERGENCES=152,
+  FOB_CONSTRUCT=153,
+  ONLINE_DISPATCH_MISSION=154
+}
+this.TIPS_REDUNDANT_REF={
+  [this.TIPS.INJURY_2]=this.TIPS.INJURY,
+  [this.TIPS.BULLET_PENETRATE_FAIL]=this.TIPS.BULLET_PENETRATE,
+  [this.TIPS.ANIMAL_CAGE]=this.TIPS.SAVE_ANIMAL,
+  [this.TIPS.FULTON_MORTAR]=this.TIPS.FULTON_MACHINEGUN,
+  [this.TIPS.FULTON_ANTI_AIRCRAFT]=this.TIPS.FULTON_MACHINEGUN,
+  [this.TIPS.PHANTOM_CIGAR_TRASH]=this.TIPS.PHANTOM_CIGAR_TOILET
+}
+this.CONTINUE_TIPS_TABLE={
+  [this.STORY_SEQUENCE.STORY_START]={
+    "BASIC",
+    "SPOTTED"
+  },
+  [this.STORY_SEQUENCE.CLEARD_ESCAPE_THE_HOSPITAL]={
+    "AUDIO_CUE",
+    "MARKING",
+    "NIGHT",
+    "COMBAT_ALERT"
+  },
+  [this.STORY_SEQUENCE.CLEARD_TO_MATHER_BASE]={
+    "TRANQUILIZER"
+  },
+  [this.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON]={
+    "DEVELOPMENT",
+    "GUNSHIP",
+    "TANK"
+  }
+}
+this.CONTROL_GUIDE={
+  MB_DEVICE=1,
+  BINO=2,
+  BINO_ZOOM=3,
+  OPTIONALRADIO=4,
+  CUSTUMMARKER=5,
+  ADVICE=6,
+  HORSE_CALL=7,
+  HORSE_HIDE=8,
+  HORSE_HIDE_CHANGE=9,
+  HORSE_RUN=10,
+  HORSE_RIDEON=11,
+  HORSE_GETOFF=12,
+  GET_INTEL=13,
+  ATTACK=14,
+  RELOAD=15,
+  CURE=16,
+  JUMP=17,
+  STANCE=18,
+  LOOK_IN=19,
+  ELUDE_UP=20,
+  ELUDE_DOWN=21,
+  CLIMEB_UP=22,
+  ROLLING=23,
+  COVER_ATTACK=24,
+  SHOULDER=25,
+  SHOULDER_THROW=26,
+  HULTON=27,
+  PIPE_UP=28,
+  FREECLIMD=29,
+  GARBAGEBOX_HIDE=30,
+  CQC=31,
+  CQC_PUNCH=32,
+  CQC_THROW=33,
+  RESTRAINT2=34,
+  NONE=35,
+  INTERROGATION=36,
+  SWOON=37,
+  KILL=38,
+  C4_SET=39,
+  C4_EXPLODING=40,
+  ACCELARATER=41,
+  BRAKE=42,
+  HELI_RIDEON=43,
+  HELI_GETOFF=44,
+  CQC_COMBO=45,
+  EQUIPMENT_WP=46,
+  CAMERA_MOVE=47,
+  CAMERA_ZOOM=48,
+  CAMERA_CHANGE=49,
+  PLAY_MOVE=50,
+  PLAY_COVER=51,
+  PLAY_DASH=52,
+  PLAY_EVADE=53,
+  ORDER_CHILD=54,
+  MACHINEGUN=55,
+  MORTAR=56,
+  ANTI_AIRCRAFT=57,
+  SEARCH_LIGHT=58,
+  UNDER_BARREL=59,
+  MOVE_IN_HELI=60,
+  BOOSTER_SCOPE=61,
+  DRIVE_COMMON_VEHICLE=62,
+  DRIVE_WALKER_GEAR=63,
+  RIDE_HORSE=64,
+  SNIPER_RIFLE=65,
+  SHIELD=66,
+  STANCE_SQUAT=67,
+  STANCE_CRAWL=68,
+  STEP_FENCE=69,
+  ATTACK_VEHICLE_SHOOT=70,
+  ATTACK_VEHICLE_CAMERA=71,
+  VEHICLE_LIGHT=72
+}
+this.PAUSE_CONTROL_GUIDE={
+  [this.CONTROL_GUIDE.DRIVE_COMMON_VEHICLE]="vehicle",
+  [this.CONTROL_GUIDE.DRIVE_WALKER_GEAR]="walker-gear",
+  [this.CONTROL_GUIDE.RIDE_HORSE]="horse"
+}
+this.CONTROL_GUIDE_LANG_ID_LIST={
+  "tutorial_mb_device",
+  "tutorial_bino",
+  "tutorial_bino_zoom",
+  "tutorial_optionalradio",
+  "tutorial_set_marker",
+  "tutorial_advice",
+  "tutorial_horse_call",
+  "tutorial_horse_hide",
+  "tutorial_horse_hide_change",
+  "tutorial_horse_run",
+  "tutorial_horse_rideon",
+  "tutorial_horse_getoff",
+  "tutorial_get_intel",
+  "tutorial_attack",
+  "tutorial_reload",
+  "tutorial_cure",
+  "tutorial_jump",
+  "tutorial_stance",
+  "tutorial_look_in",
+  "tutorial_elude_up",
+  "tutorial_elude_down",
+  "tutorial_climeb_up",
+  "tutorial_rolling",
+  "tutorial_cover_attack",
+  "tutorial_shoulder",
+  "tutorial_shoulder_throw",
+  "tutorial_hulton",
+  "tutorial_pipe",
+  "tutorial_cliff",
+  "tutorial_garbagebox_hide",
+  "tutorial_cqc",
+  "tutorial_cqc_punch",
+  "tutorial_cqc_throw",
+  "tutorial_restraint2",
+  "",
+  "tutorial_interrogation",
+  "tutorial_swoon",
+  "tutorial_kill",
+  "tutorial_C4_set",
+  "tutorial_C4_exploding",
+  "tutorial_accelarater",
+  "tutorial_brake",
+  "tutorial_heli_rideon",
+  "tutorial_heli_getoff",
+  "tutorial_cqc_combo",
+  "tutorial_equipment_wp",
+  "tutorial_camera_move",
+  "tutorial_camera_zoom",
+  "tutorial_camera_change",
+  "tutorial_play_move",
+  "tutorial_play_cover",
+  "tutorial_play_dash",
+  "tutorial_play_evade",
+  "tutorial_order_child",
+  "tutorial_attack_machinegun",
+  "tutorial_attack_mortar",
+  "tutorial_attack_anti_aircraft",
+  "tutorial_searchlight_onoff",
+  "tutorial_change_barrel",
+  "tutorial_play_move",
+  "tutorial_bino_zoom",
+  "tutorial_show_controller",
+  "tutorial_show_controller",
+  "tutorial_show_controller",
+  "tutorial_change_camera",
+  "tutorial_shield2",
+  "tutorial_stance3",
+  "tutorial_stance2",
+  "tutorial_fence_jump",
+  "tutorial_v_attack",
+  "tutorial_v_fps_tps",
+  "tutorial_searchlight_onoff"
+}
+this.GMP_COST_TYPE={
+  FULTON=1,
+  SUPPORT_SUPPLY=2,
+  SUPPORT_ATTACK=3,
+  CALL_HELLI=4,
+  BUDDY=5,
+  CLEAR_SIDE_OPS=6,
+  DESTROY_SUPPORT_HELI=7
+}
+this.CLUSTER_NAME={
+  "Command",
+  "Combat",
+  "Develop",
+  "Support",
+  "Medical",
+  "Spy",
+  "BaseDev"
+}
 this.CLUSTER_DEFINE=this.Enum(this.CLUSTER_NAME)
-this.PLNT_NAME={"Special","Common1","Common2","Common3"}
+this.PLNT_NAME={
+  "Special",
+  "Common1",
+  "Common2",
+  "Common3"
+}
 this.PLNT_DEFINE=this.Enum(this.PLNT_NAME)
 this.SECURITY_SETTING={
   numInSpecialPlatform={
@@ -1259,11 +1961,50 @@ this.FOB_EVENT_ID_LIST={
   PARASITE_METAL={5}--RETAILPATCH 1070
 }
 this.STATION_LIST={
-  afgh={"bridge","enemyBase","field","fort","tent","cliffTown","commFacility","powerPlant","remmnants","slopedTown","sovietBase","village"},
-  mafr={"banana","diamond","lab","flowStation","hill","outland","pfCamp","savannah","swamp"},
-  mtbs={"Command","Combat","Develop","Support","Medical","Spy","BaseDev"}
+  afgh={
+    "bridge",
+    "enemyBase",
+    "field",
+    "fort",
+    "tent",
+    "cliffTown",
+    "commFacility",
+    "powerPlant",
+    "remmnants",
+    "slopedTown",
+    "sovietBase",
+    "village"
+  },
+  mafr={
+    "banana",
+    "diamond",
+    "lab",
+    "flowStation",
+    "hill",
+    "outland",
+    "pfCamp",
+    "savannah",
+    "swamp"
+  },
+  mtbs={
+    "Command",
+    "Combat",
+    "Develop",
+    "Support",
+    "Medical",
+    "Spy",
+    "BaseDev"
+  }
 }
-this.STAFF_TYPE_ID={NORMAL=1,COMBAT=2,DEVELOP=3,BASE_DEV=4,SUPPORT=5,SPY=6,MEDICAL=7}
+this.STAFF_TYPE_ID={
+  NORMAL=1,
+  COMBAT=2,
+  DEVELOP=3,
+  BASE_DEV=4,
+  SUPPORT=5,
+  SPY=6,
+  MEDICAL=7
+}
 this.UNIQUE_STAFF_TYPE_ID={
   SNEAK=248,
   OCELOT=249,
@@ -1440,8 +2181,28 @@ this.IGNORE_EXIST_STAFF_CHECK={
   [this.UNIQUE_STAFF_TYPE_ID.FULTON_LESSON_STAFF_14]=true,
   [this.UNIQUE_STAFF_TYPE_ID.S10040_DEAF_HOSTAGE]=true
 }
-this.CYPR_PLAYER_INITIAL_WEAPON_TABLE={{secondary="EQP_None"},{primaryHip="EQP_None"},{primaryBack="EQP_None"},{support="EQP_None"},{support="EQP_None"},{support="EQP_None"},{support="EQP_None"},{support="EQP_None"},{support="EQP_None"},{support="EQP_None"},{support="EQP_None"}}
-this.CYPR_PLAYER_INITIAL_ITEM_TABLE={"EQP_None","EQP_None","EQP_None","EQP_None","EQP_None","EQP_None","EQP_None"}
+this.CYPR_PLAYER_INITIAL_WEAPON_TABLE={
+  {secondary="EQP_None"},
+  {primaryHip="EQP_None"},
+  {primaryBack="EQP_None"},
+  {support="EQP_None"},
+  {support="EQP_None"},
+  {support="EQP_None"},
+  {support="EQP_None"},
+  {support="EQP_None"},
+  {support="EQP_None"},
+  {support="EQP_None"},
+  {support="EQP_None"}
+}
+this.CYPR_PLAYER_INITIAL_ITEM_TABLE={
+  "EQP_None",
+  "EQP_None",
+  "EQP_None",
+  "EQP_None",
+  "EQP_None",
+  "EQP_None",
+  "EQP_None"
+}
 this.RANKING_MAX=21
 this.RANKING_ENUM=Tpp.Enum{
   "TotalTacticalTakeDownCount",
@@ -1495,6 +2256,10 @@ this.DEFAULT_DROP_ROUTE={
 }
 this.DIRECTION_ZOOM_IN_CAMERA_ZOOM_INTERP_TIME=1
 this.DIRECTION_ZOOM_IN_CAMERA_ROTATION_INTERP_TIME=1
-this.ENEMY_HELI_COLORING_TYPE={DEFAULT=0,BLACK=1,RED=2}
+this.ENEMY_HELI_COLORING_TYPE={
+  DEFAULT=0,
+  BLACK=1,
+  RED=2
+}
 InfCore.Log"TppDefine.lua done"
 return this

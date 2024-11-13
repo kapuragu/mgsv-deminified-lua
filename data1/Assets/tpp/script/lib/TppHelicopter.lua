@@ -1,27 +1,32 @@
 local this={}
+
 local StrCode32=Fox.StrCode32
 local IsTypeTable=Tpp.IsTypeTable
 local IsTypeString=Tpp.IsTypeString
 local SendCommand=GameObject.SendCommand
 local GetGameObjectId=GameObject.GetGameObjectId
 local NULL_ID=GameObject.NULL_ID
+
 function this.GetSupportHeliGameObjectId()
   if not mvars.hel_isExistSupportHelicopter then
     return
   end
   return GameObject.GetGameObjectId("TppHeli2","SupportHeli")
 end
+
 function this.SetNoSupportHelicopter()
   mvars.hel_isExistSupportHelicopter=false
 end
+
 function this.UnsetNoSupportHelicopter()
   mvars.hel_isExistSupportHelicopter=true
 end
-function this.ForceCallToLandingZone(_lzName)
-  if not IsTypeTable(_lzName)then
+
+function this.ForceCallToLandingZone(lzDef)
+  if not IsTypeTable(lzDef)then
     return
   end
-  local landingZoneName=_lzName.landingZoneName
+  local landingZoneName=lzDef.landingZoneName
   if not IsTypeString(landingZoneName)then
     return
   end
@@ -37,11 +42,12 @@ function this.ForceCallToLandingZone(_lzName)
     return
   end
 end
-function this.CallToLandingZone(_lzName)
-  if not IsTypeTable(_lzName)then
+
+function this.CallToLandingZone(lzDef)
+  if not IsTypeTable(lzDef)then
     return
   end
-  local landingZoneName=_lzName.landingZoneName
+  local landingZoneName=lzDef.landingZoneName
   if not IsTypeString(landingZoneName)then
     return
   end
@@ -56,11 +62,12 @@ function this.CallToLandingZone(_lzName)
     return
   end
 end
-function this.SetEnableLandingZone(_lzName)
-  if not IsTypeTable(_lzName)then
+
+function this.SetEnableLandingZone(lzDef)
+  if not IsTypeTable(lzDef)then
     return
   end
-  local landingZoneName=_lzName.landingZoneName
+  local landingZoneName=lzDef.landingZoneName
   if not IsTypeString(landingZoneName)then
     return
   end
@@ -74,11 +81,12 @@ function this.SetEnableLandingZone(_lzName)
     return
   end
 end
-function this.SetDisableLandingZone(_lzName)
-  if not IsTypeTable(_lzName)then
+
+function this.SetDisableLandingZone(lzDef)
+  if not IsTypeTable(lzDef)then
     return
   end
-  local landingZoneName=_lzName.landingZoneName
+  local landingZoneName=lzDef.landingZoneName
   if not IsTypeString(landingZoneName)then
     return
   end
@@ -92,11 +100,12 @@ function this.SetDisableLandingZone(_lzName)
     return
   end
 end
-function this.GetLandingZoneExists(lzName)
-  if not IsTypeTable(lzName)then
+
+function this.GetLandingZoneExists(lzDef)
+  if not IsTypeTable(lzDef)then
     return
   end
-  local landingZoneName=lzName.landingZoneName
+  local landingZoneName=lzDef.landingZoneName
   if not IsTypeString(landingZoneName)then
     return
   end
@@ -110,6 +119,7 @@ function this.GetLandingZoneExists(lzName)
     return false
   end
 end
+
 function this.SetNewestPassengerTable()
   if not mvars.hel_isExistSupportHelicopter then
     this.ClearPassengerTable()
@@ -133,9 +143,11 @@ function this.SetNewestPassengerTable()
   mvars.hel_heliPassengerList=passengerIds
   mvars.hel_passengerListGameObjectId=heliId
 end
+
 function this.GetPassengerlist()
   return mvars.hel_heliPassengerList
 end
+
 function this.ClearPassengerTable()
   if mvars.hel_passengerListGameObjectId then
     SendCommand(mvars.hel_passengerListGameObjectId,{id="InitializePassengers"})
@@ -144,6 +156,7 @@ function this.ClearPassengerTable()
   mvars.hel_heliPassengerTable=nil
   mvars.hel_heliPassengerList=nil
 end
+
 function this.IsInHelicopter(passengerId)
   if not IsTypeTable(mvars.hel_heliPassengerTable)then
     return
@@ -156,15 +169,18 @@ function this.IsInHelicopter(passengerId)
   end
   return mvars.hel_heliPassengerTable[gameId]
 end
+
 function this.ForcePullOut()
   GameObject.SendCommand({type="TppHeli2",index=0},{id="PullOut",forced=true})
 end
+
 function this.AdjustBuddyDropPoint()
   if gvars.heli_missionStartRoute~=0 then
     TppBuddyService.AdjustFromDropPoint(gvars.heli_missionStartRoute,EntryBuddyType.BUDDY,6,3.14)
     TppBuddyService.AdjustFromDropPoint(gvars.heli_missionStartRoute,EntryBuddyType.VEHICLE,6,0)
   end
 end
+
 function this.Init(missionTable)
   local heliId=GetGameObjectId("TppHeli2","SupportHeli")
   if heliId==NULL_ID then
@@ -181,8 +197,10 @@ function this.Init(missionTable)
     return
   end
   local helicopterRouteList=nil
-  if(missionTable.sequence and missionTable.sequence.missionStartPosition)and missionTable.sequence.missionStartPosition.helicopterRouteList then
-    if not Tpp.IsTypeFunc(missionTable.sequence.missionStartPosition.IsUseRoute)or missionTable.sequence.missionStartPosition.IsUseRoute()then
+  if(missionTable.sequence and missionTable.sequence.missionStartPosition)
+  and missionTable.sequence.missionStartPosition.helicopterRouteList then
+    if not Tpp.IsTypeFunc(missionTable.sequence.missionStartPosition.IsUseRoute)
+    or missionTable.sequence.missionStartPosition.IsUseRoute() then
       helicopterRouteList=missionTable.sequence.missionStartPosition.helicopterRouteList
     end
   end
@@ -199,6 +217,7 @@ function this.Init(missionTable)
     end
   end
 end
+
 function this.SetDefaultTakeOffTime()
   local heliId=this.GetSupportHeliGameObjectId()
   if(heliId==nil)then
@@ -209,6 +228,7 @@ function this.SetDefaultTakeOffTime()
   end
   GameObject.SendCommand(heliId,{id="SetTakeOffWaitTime",time=5})
 end
+
 function this.SetNoTakeOffTime()
   local heliId=this.GetSupportHeliGameObjectId()
   if(heliId==nil)then
@@ -219,6 +239,7 @@ function this.SetNoTakeOffTime()
   end
   GameObject.SendCommand(heliId,{id="SetTakeOffWaitTime",time=0})
 end
+
 function this.SetRouteToHelicopterOnStartMission()
   local heliId=this.GetSupportHeliGameObjectId()
   if(heliId==nil)then
@@ -231,21 +252,36 @@ function this.SetRouteToHelicopterOnStartMission()
     GameObject.SendCommand(heliId,{id="SendPlayerAtRouteStart",isAssault=TppLandingZone.IsAssaultDropLandingZone(gvars.heli_missionStartRoute)})
   end
 end
+
 function this.ResetMissionStartHelicopterRoute()
   gvars.heli_missionStartRoute=0
 end
+
 function this.GetMissionStartHelicopterRoute()
   return gvars.heli_missionStartRoute
 end
+
 local heliColors={
-  [TppDefine.ENEMY_HELI_COLORING_TYPE.DEFAULT]={pack="",fova=""},
-  [TppDefine.ENEMY_HELI_COLORING_TYPE.BLACK]={pack="/Assets/tpp/pack/fova/mecha/sbh/sbh_ene_blk.fpk",fova="/Assets/tpp/fova/mecha/sbh/sbh_ene_blk.fv2"},
-  [TppDefine.ENEMY_HELI_COLORING_TYPE.RED]={pack="/Assets/tpp/pack/fova/mecha/sbh/sbh_ene_red.fpk",fova="/Assets/tpp/fova/mecha/sbh/sbh_ene_red.fv2"}
+  [TppDefine.ENEMY_HELI_COLORING_TYPE.DEFAULT]={
+    pack="",
+    fova=""
+  },
+  [TppDefine.ENEMY_HELI_COLORING_TYPE.BLACK]={
+    pack="/Assets/tpp/pack/fova/mecha/sbh/sbh_ene_blk.fpk",
+    fova="/Assets/tpp/fova/mecha/sbh/sbh_ene_blk.fv2"
+  },
+  [TppDefine.ENEMY_HELI_COLORING_TYPE.RED]={
+    pack="/Assets/tpp/pack/fova/mecha/sbh/sbh_ene_red.fpk",
+    fova="/Assets/tpp/fova/mecha/sbh/sbh_ene_red.fv2"
+  }
 }
+
 function this.GetEnemyColoringPack(heliColoringType)
   return heliColors[heliColoringType].pack
 end
+
 function this.SetEnemyColoring(heliColoringType)
   SendCommand({type="TppEnemyHeli",index=0},{id="SetColoring",coloringType=heliColoringType,fova=heliColors[heliColoringType].fova})
 end
+
 return this

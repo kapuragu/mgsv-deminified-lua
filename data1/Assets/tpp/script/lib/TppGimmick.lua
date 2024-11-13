@@ -1,11 +1,13 @@
 -- TppGimmick.lua
 --tex TODO: if you pull this into the build then integrate workaround in InfQuest.OnActivateQuest
 local this={}
+
 local StrCode32=Fox.StrCode32
 local GetTypeIndex=GameObject.GetTypeIndex
 local GetGameObjectId=GameObject.GetGameObjectId
 local NULL_ID=GameObject.NULL_ID
 local IsTypeTable=Tpp.IsTypeTable
+
 this.MissionCollectionTable={
   [10020]={"col_diamond_s_s10020_0000"},
   [10033]={"col_develop_HighprecisionAR_s10033_0000"},
@@ -23,6 +25,7 @@ this.MissionCollectionTable={
   [10171]={"col_diamond_l_s10171_0000"},
   [10200]={"col_herb_l_s10200_0000","col_herb_l_s10200_0001","col_herb_l_s10200_0002"}
 }
+
 this.MissionCollectionMissionTaskTable={
   [10020]={30},
   [10033]={17},
@@ -35,8 +38,42 @@ this.MissionCollectionMissionTaskTable={
   [10093]={27},
   [10171]={40}
 }
-this.GIMMICK_TYPE={NONE=0,ANTN=1,MCHN=2,CMMN=3,GUN=4,MORTAR=5,GNRT=6,CNTN=7,ANTIAIR=8,AACR=9,LIGHT=10,TOWER=11,TLET=12,TRSH=13,CSET=14,SWTC=15,FLOWSTATION_TANK001=100,FLOWSTATION_TANK002=101,FACTORY_WALL=102,FACTORY_FRAME=103,FACTORY_WTTR=104,FACTORY_TNNL=105,LAB_BRDG=106,FACTORY_TANK=107,FACTORY_WTNK=108,FACTORY_WSST=109,FLOWSTATION_PDOR=110,FACTORY_CRTN=111,FLOWSTATION_COPS=112,MAX=255}
+
+this.GIMMICK_TYPE={
+  NONE=0,
+  ANTN=1,
+  MCHN=2,
+  CMMN=3,
+  GUN=4,
+  MORTAR=5,
+  GNRT=6,
+  CNTN=7,
+  ANTIAIR=8,
+  AACR=9,
+  LIGHT=10,
+  TOWER=11,
+  TLET=12,
+  TRSH=13,
+  CSET=14,
+  SWTC=15,
+  FLOWSTATION_TANK001=100,
+  FLOWSTATION_TANK002=101,
+  FACTORY_WALL=102,
+  FACTORY_FRAME=103,
+  FACTORY_WTTR=104,
+  FACTORY_TNNL=105,
+  LAB_BRDG=106,
+  FACTORY_TANK=107,
+  FACTORY_WTNK=108,
+  FACTORY_WSST=109,
+  FLOWSTATION_PDOR=110,
+  FACTORY_CRTN=111,
+  FLOWSTATION_COPS=112,
+  MAX=255
+}
+
 local gimmickToAnnounceType={[this.GIMMICK_TYPE.AACR]="destroyRadar"}
+
 this.COLLECTION_REPOP_COUNT_DECREMENT_TABLE={
   [TppCollection.TYPE_DIAMOND_LARGE]=60,
   [TppCollection.TYPE_DIAMOND_SMALL]=100,
@@ -91,19 +128,32 @@ this.COLLECTION_REPOP_COUNT_DECREMENT_TABLE={
   [TppCollection.TYPE_HERB_0]=100,
   [TppCollection.TYPE_HERB_1]=100
 }
+
 function this.Messages()
   return Tpp.StrCode32Table{
     Radio={
-      {msg="Finish",sender="f1000_rtrg2020",func=function()
-        TppUI.ShowAnnounceLog"unlockLz"
-      end}},
+      {
+        msg="Finish",
+        sender="f1000_rtrg2020",
+        func=function()
+          TppUI.ShowAnnounceLog"unlockLz"
+        end
+      }
+    },
     UI={
-      {msg="EndFadeIn",sender="FadeInOnGameStart",func=function()
-        this.OnMissionGameStart()
-      end,
-      option={isExecMissionPrepare=true,isExecMissionClear=true}}},
-    nil}
+      {
+        msg="EndFadeIn",
+        sender="FadeInOnGameStart",
+        func=function()
+          this.OnMissionGameStart()
+        end,
+        option={isExecMissionPrepare=true,isExecMissionClear=true}
+      }
+    },
+    nil
+  }
 end
+
 function this.IsBroken(isBrokenParams)
   if not IsTypeTable(isBrokenParams)then
     return
@@ -126,6 +176,7 @@ function this.IsBroken(isBrokenParams)
     end
   end
 end
+
 function this.ResetGimmick(resetParams)
   if not IsTypeTable(resetParams)then
     return
@@ -143,6 +194,7 @@ function this.ResetGimmick(resetParams)
     Gimmick.ResetGimmick(gimmickInfo.type,gimmickInfo.locatorName,gimmickInfo.dataSetName)
   end
 end
+
 function this.EnableMarkerGimmick(gimmickId)
   local gimmickInfo=mvars.gim_identifierParamTable[gimmickId]
   if not Gimmick.BreakGimmick then
@@ -150,6 +202,7 @@ function this.EnableMarkerGimmick(gimmickId)
   end
   Gimmick.EnableMarkerGimmick(gimmickInfo.type,gimmickInfo.locatorName,gimmickInfo.dataSetName,true)
 end
+
 function this.OnAllocate(missionTable)
   if TppLocation.IsAfghan()then
     TppCollection.SetScriptDeclVars("col_daimondStatus_afgh","col_markerStatus_afgh","col_isRegisteredInDb_afgh")
@@ -159,6 +212,7 @@ function this.OnAllocate(missionTable)
     TppCollection.SetScriptDeclVars("col_daimondStatus_mtbs","col_markerStatus_mtbs","col_isRegisteredInDb_mtbs")
   end
 end
+
 function this.Init(missionTable)
   this.messageExecTable=Tpp.MakeMessageExecTable(this.Messages())
   if TppMission.IsFreeMission(vars.missionCode)then
@@ -191,8 +245,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_Revolver_Shotgun"}
       local enable
-      local i=TppStory.GetCurrentStorySequence()
-      if i>=TppDefine.STORY_SEQUENCE.CLEARD_TAKE_OUT_THE_CONVOY then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_TAKE_OUT_THE_CONVOY then
         enable=true
       else
         enable=false
@@ -202,8 +256,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_Emergencyrescue"}
       local enable
-      local t=TppStory.GetCurrentStorySequence()
-      if t>=TppDefine.STORY_SEQUENCE.CLEARD_ELIMINATE_THE_POWS then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_ELIMINATE_THE_POWS then
         enable=true
       else
         enable=false
@@ -213,8 +267,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_Antimaterial"}
       local enable
-      local i=TppStory.GetCurrentStorySequence()
-      if i>=TppDefine.STORY_SEQUENCE.CLEARD_WHITE_MAMBA then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_WHITE_MAMBA then
         enable=true
       else
         enable=false
@@ -224,8 +278,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_Highprecision_SMG"}
       local enable
-      local i=TppStory.GetCurrentStorySequence()
-      if i>=TppDefine.STORY_SEQUENCE.CLEARD_WHITE_MAMBA then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_WHITE_MAMBA then
         enable=true
       else
         enable=false
@@ -235,8 +289,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_FLamethrower"}
       local enable
-      local t=TppStory.GetCurrentStorySequence()
-      if t>=TppDefine.STORY_SEQUENCE.CLEARD_OKB_ZERO then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_OKB_ZERO then
         enable=true
       else
         enable=false
@@ -246,8 +300,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_HighprecisionAR"}
       local enable
-      local i=TppStory.GetCurrentStorySequence()
-      if i>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
         enable=true
       else
         enable=false
@@ -257,8 +311,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_Semiauto_SR"}
       local enable
-      local i=TppStory.GetCurrentStorySequence()
-      if i>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
         enable=true
       else
         enable=false
@@ -268,8 +322,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_Shield"}
       local enable
-      local t=TppStory.GetCurrentStorySequence()
-      if t>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
         enable=true
       else
         enable=false
@@ -279,8 +333,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_Shield0000"}
       local enable
-      local t=TppStory.GetCurrentStorySequence()
-      if t>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
         enable=true
       else
         enable=false
@@ -290,8 +344,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_Shield0001"}
       local enable
-      local i=TppStory.GetCurrentStorySequence()
-      if i>=TppDefine.STORY_SEQUENCE.CLEARD_FLAG_MISSIONS_AFTER_TO_MATHER_BASE then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_FLAG_MISSIONS_AFTER_TO_MATHER_BASE then
         enable=true
       else
         enable=false
@@ -301,8 +355,8 @@ function this.Init(missionTable)
     do
       local collection={"col_develop_Shield0002"}
       local enable
-      local i=TppStory.GetCurrentStorySequence()
-      if i>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
+      local currentStorySequenceIndex=TppStory.GetCurrentStorySequence()
+      if currentStorySequenceIndex>=TppDefine.STORY_SEQUENCE.CLEARD_FIND_THE_SECRET_WEAPON then
         enable=true
       else
         enable=false
@@ -314,8 +368,8 @@ function this.Init(missionTable)
     if vars.missionCode==10200 then
       local missionCollection=this.MissionCollectionTable[10200]
       local count=0
-      for i,n in pairs(missionCollection)do
-        if TppCollection.RepopCountOperation("GetAt",n)>0 then
+      for i,collectionName in pairs(missionCollection)do
+        if TppCollection.RepopCountOperation("GetAt",collectionName)>0 then
           count=count+1
         end
       end
@@ -346,6 +400,7 @@ function this.Init(missionTable)
   this.EnableCollectionTable(collectionTable,true)
   this.InitQuest()
 end
+
 function this.RepopMissionTaskCollection()
   local missionCode=vars.missionCode
   if TppMission.IsHardMission(missionCode)then
@@ -375,12 +430,15 @@ function this.RepopMissionTaskCollection()
     end
   end
 end
+
 function this.OnReload()
   this.messageExecTable=Tpp.MakeMessageExecTable(this.Messages())
 end
+
 function this.OnMessage(sender,messageId,arg0,arg1,arg2,arg3,strLogText)
   Tpp.DoMessage(this.messageExecTable,TppMission.CheckMessageOption,sender,messageId,arg0,arg1,arg2,arg3,strLogText)
 end
+
 function this.OnMissionGameStart()
   if not TppMission.IsFreeMission(vars.missionCode)then
     if mvars.gim_shownEspionageBox then
@@ -388,11 +446,13 @@ function this.OnMissionGameStart()
     end
   end
 end
+
 function this.DecrementCollectionRepopCount()
   for type,count in pairs(this.COLLECTION_REPOP_COUNT_DECREMENT_TABLE)do
     TppCollection.RepopCountOperation("DecByType",type,count)
   end
 end
+
 function this.MafrRiverPrimSetting()
   if not TppEffectUtility.UpdatePrimRiver then
     return
@@ -404,8 +464,14 @@ function this.MafrRiverPrimSetting()
     this.SetMafrRiverPrimVisibility(true)
   end
 end
+
 function this.SetMafrRiverPrimVisibility(enable)
-  local primLayers={"cleanRiver","dirtyRiver","oilMud_open","dirtyFlow"}
+  local primLayers={
+    "cleanRiver",
+    "dirtyRiver",
+    "oilMud_open",
+    "dirtyFlow"
+  }
   local primLayerShow={true,false,false,false}
   for i,layerName in ipairs(primLayers)do
     local show
@@ -463,6 +529,7 @@ function this.SetUpIdentifierTable(identifierTable)
 --    },
 --   }
 end
+
 --afgh_gimmick.gimmickBreakConnectTable / mafr_...
 --REF {swamp_antn001 = "swamp_mchn001",...}
 function this.SetUpBreakConnectTable(gimmickBreakConnectTable)
@@ -472,6 +539,7 @@ function this.SetUpBreakConnectTable(gimmickBreakConnectTable)
     mvars.gim_breakConnectTable[gimmick2]=gimmack1
   end
 end
+
 --afgh_gimmick.checkBrokenAndBreakConnectTable / mafr_...
 function this.SetUpCheckBrokenAndBreakConnectTable(checkBrokenAndBreakConnectTable)
   mvars.gim_checkBrokenAndBreakConnectTable={}
@@ -479,6 +547,7 @@ function this.SetUpCheckBrokenAndBreakConnectTable(checkBrokenAndBreakConnectTab
     this._SetUpCheckBrokenAndBreakConnectTable(gimmickId,gimmickInfo)
   end
 end
+
 function this._SetUpCheckBrokenAndBreakConnectTable(gimmickId,gimmickInfo)
   if not mvars.gim_identifierParamTable[gimmickId]then
     return
@@ -500,14 +569,16 @@ function this._SetUpCheckBrokenAndBreakConnectTable(gimmickId,gimmickInfo)
   mvars.gim_checkBrokenAndBreakConnectTable[gimmickId]=gimmickInfo
   mvars.gim_checkBrokenAndBreakConnectTable[checkBrokenGimmickId]={checkBrokenGimmickId=gimmickId,breakGimmickId=breakGimmickId}
 end
+
 --NMC cant see any references to this
-function this.SetUpUseGimmickRouteTable(e)
+function this.SetUpUseGimmickRouteTable(routeGimmickConnectTable)
   mvars.gim_routeGimmickConnectTable={}
-  for e,n in pairs(e)do
-    mvars.gim_routeGimmickConnectTable[StrCode32(e)]=n.gimmickId
+  for routeName,gimmickConnectDef in pairs(routeGimmickConnectTable)do
+    mvars.gim_routeGimmickConnectTable[StrCode32(routeName)]=gimmickConnectDef.gimmickId
   end
   Tpp.DEBUG_DumpTable(mvars.gim_routeGimmickConnectTable)
 end
+
 function this.GetRouteConnectedGimmickId(route)
   if not mvars.gim_routeGimmickConnectTable then
     return
@@ -521,12 +592,12 @@ function this.SetUpConnectLandingZoneTable(connectLZTable)
     mvars.gim_connectLandingZoneTable[gimmickName]=lzInfo.aprLandingZoneName
   end
 end
-function this.SetUpConnectPowerCutTable(e)
+function this.SetUpConnectPowerCutTable(powerCutTable)
   mvars.gim_connectPowerCutAreaTable={}
   mvars.gim_connectPowerCutCpTable={}
-  for gimmickId,e in pairs(e)do
-    local areaName=e.powerCutAreaName
-    local cpName=e.cpName
+  for gimmickId,powerCutDef in pairs(powerCutTable)do
+    local areaName=powerCutDef.powerCutAreaName
+    local cpName=powerCutDef.cpName
     mvars.gim_connectPowerCutAreaTable[gimmickId]=areaName
     if cpName then
       local cpId=GetGameObjectId(cpName)
@@ -540,21 +611,23 @@ function this.SetUpConnectPowerCutTable(e)
     end
   end
 end
-function this.SetUpConnectVisibilityTable(e)
+
+function this.SetUpConnectVisibilityTable(connectVisibilityTable)
   mvars.gim_connectVisibilityTable={}
-  for e,n in pairs(e)do
-    mvars.gim_connectVisibilityTable[e]=n
+  for gimmickName,connectVisibilityDef in pairs(connectVisibilityTable)do
+    mvars.gim_connectVisibilityTable[gimmickName]=connectVisibilityDef
   end
 end
-function this.SetCommunicateGimmick(e)
-  if not IsTypeTable(e)then
+
+function this.SetCommunicateGimmick(gimmickCpConnectTable)
+  if not IsTypeTable(gimmickCpConnectTable)then
     return
   end
   mvars.gim_gimmickIdToCpTable=mvars.gim_gimmickIdToCpTable or{}
   local tppCommandPost={type="TppCommandPost2"}
-  for cpName,e in pairs(e)do
+  for cpName,gimmickList in pairs(gimmickCpConnectTable)do
     local gimmicks={}
-    for e,gimmickId in ipairs(e)do
+    for e,gimmickId in ipairs(gimmickList)do
       local gimmickInfo=mvars.gim_identifierParamTable[gimmickId]
       if gimmickInfo then
         table.insert(gimmicks,gimmickInfo)
@@ -564,14 +637,15 @@ function this.SetCommunicateGimmick(e)
         mvars.gim_gimmickIdToCpTable[StrCode32(gimmickId)]=cpId
       end
     end
-    local isCommunicateBase=e.isCommunicateBase
-    local groupName=e.groupName
+    local isCommunicateBase=gimmickList.isCommunicateBase
+    local groupName=gimmickList.groupName
     local command={id="SetCommunicateGimmick",cpName=cpName,isCommunicateBase=isCommunicateBase,gimmicks=gimmicks,groupName=groupName}
     GameObject.SendCommand(tppCommandPost,command)
   end
 end
+
 --NMC on GameObject SwitBreakGimmickchGimmick msg
-function this.BreakGimmick(gameId,locatorNameHash,dataSetNameHash,unkP4)
+function this.BreakGimmick(gameId,locatorNameHash,dataSetNameHash,attackerId)
   local gimmickId=this.GetGimmickID(gameId,locatorNameHash,dataSetNameHash)
   --GetGimmickID(gameId,locatorNameHash,dataSetNameHash)
   if not gimmickId then
@@ -582,13 +656,14 @@ function this.BreakGimmick(gameId,locatorNameHash,dataSetNameHash,unkP4)
   this.HideAsset(gimmickId)
   this.ShowAnnounceLog(gimmickId)
   this.UnlockLandingZone(gimmickId)
-  local unkLBool=false
-  if(unkP4==NULL_ID)then
-    unkLBool=true
+  local attackedByNull=false
+  if(attackerId==NULL_ID)then
+    attackedByNull=true
   end
-  this.PowerCut(gimmickId,true,unkLBool)
-  this.SetHeroicAndOrgPoint(gimmickId,unkP4)
+  this.PowerCut(gimmickId,true,attackedByNull)
+  this.SetHeroicAndOrgPoint(gimmickId,attackerId)
 end
+
 --NMC returns gimmickIdentifierParamTable identifier, see  SetUpIdentifierTable
 function this.GetGimmickID(gameId,locatorNameHash,dataSetNameHash)
   local typeIndex=GetTypeIndex(gameId)
@@ -610,6 +685,7 @@ function this.GetGimmickID(gameId,locatorNameHash,dataSetNameHash)
   end
   return identifier
 end
+
 function this.GetGameObjectId(gimmickId)
   local gimmickInfo=mvars.gim_identifierParamTable[gimmickId]
   if not gimmickInfo then
@@ -617,14 +693,16 @@ function this.GetGameObjectId(gimmickId)
   end
   return Gimmick.GetGameObjectId(gimmickInfo.type,gimmickInfo.locatorName,gimmickInfo.dataSetName)
 end
-function this.BreakConnectedGimmick(e)
-  local connectedGimmickId=mvars.gim_breakConnectTable[e]
+
+function this.BreakConnectedGimmick(gimmickName)
+  local connectedGimmickId=mvars.gim_breakConnectTable[gimmickName]
   if not connectedGimmickId then
     return
   end
   local gimmickInfo=mvars.gim_identifierParamTable[connectedGimmickId]
   Gimmick.BreakGimmick(gimmickInfo.type,gimmickInfo.locatorName,gimmickInfo.dataSetName,false)
 end
+
 function this.CheckBrokenAndBreakConnectedGimmick(gimmickId)
   if not mvars.gim_checkBrokenAndBreakConnectTable then
     return
@@ -642,21 +720,25 @@ function this.CheckBrokenAndBreakConnectedGimmick(gimmickId)
     end
   end
 end
-function this.HideAsset(e)
-  local e=mvars.gim_connectVisibilityTable[e]
-  if not e then
+
+function this.HideAsset(gimmickName)
+  local connectVisibilityInfo=mvars.gim_connectVisibilityTable[gimmickName]
+  if not connectVisibilityInfo then
     return
   end
-  for i,n in pairs(e.invisibilityList)do
-    TppDataUtility.SetVisibleDataFromIdentifier(e.identifierName,n,false,true)
+  for i,dataName in pairs(connectVisibilityInfo.invisibilityList)do
+    TppDataUtility.SetVisibleDataFromIdentifier(connectVisibilityInfo.identifierName,dataName,false,true)
   end
 end
+
 function this.Show(gimmickId)
-  local e=this.SetVisibility(gimmickId,false)
+  local isShow=this.SetVisibility(gimmickId,false)
 end
+
 function this.Hide(gimmickId)
   this.SetVisibility(gimmickId,true)
 end
+
 function this.SetVisibility(gimmickId,setInvisible)
   local gimmickInfo=mvars.gim_identifierParamTable[gimmickId]
   if not gimmickInfo then
@@ -665,6 +747,7 @@ function this.SetVisibility(gimmickId,setInvisible)
   Gimmick.InvisibleGimmick(gimmickInfo.type,gimmickInfo.locatorName,gimmickInfo.dataSetName,setInvisible)
   return true
 end
+
 function this.UnlockLandingZone(gimmickId)
   if TppLandingZone.IsDisableUnlockLandingZoneOnMission()then
     return
@@ -684,6 +767,7 @@ function this.UnlockLandingZone(gimmickId)
     TppRadio.PlayCommonRadio(TppDefine.COMMON_RADIO.UNLOCK_LANDING_ZONE)
   end
 end
+
 function this.ShowAnnounceLog(gimmickId)
   local gimmickType=mvars.gim_identifierParamTable[gimmickId].gimmickType
   if not gimmickType then
@@ -695,16 +779,18 @@ function this.ShowAnnounceLog(gimmickId)
   end
   this._ShowCommCutOffAnnounceLog(gimmickId)
 end
-function this._ShowCommCutOffAnnounceLog(e)
+
+function this._ShowCommCutOffAnnounceLog(gimmickName)
   if not mvars.gim_gimmickIdToCpTable then
     return
   end
-  local cpId=mvars.gim_gimmickIdToCpTable[StrCode32(e)]
+  local cpId=mvars.gim_gimmickIdToCpTable[StrCode32(gimmickName)]
   if not cpId then
     return
   end
   GameObject.SendCommand(cpId,{id="SetCommunicateAnnounce"})
 end
+
 --NMC on GameObject SwitchGimmick msg
 function this.SwitchGimmick(gameId,locatorNameHash,dataSetNameHash,switchFlag)
   local gimmickId=this.GetGimmickID(gameId,locatorNameHash,dataSetNameHash)
@@ -717,18 +803,20 @@ function this.SwitchGimmick(gameId,locatorNameHash,dataSetNameHash,switchFlag)
   end
   this.PowerCut(gimmickId,powerCutOn,false)
 end
-function this.PowerCut(gimmickId,powerCutOn,RENsomeBool)
+
+function this.PowerCut(gimmickId,powerCutOn,attackedByNull)
   local connectPowerCutAreaTable=mvars.gim_connectPowerCutAreaTable[gimmickId]
   if connectPowerCutAreaTable then
     if powerCutOn then
-      Gimmick.PowerCutOn(connectPowerCutAreaTable,RENsomeBool)
+      Gimmick.PowerCutOn(connectPowerCutAreaTable,attackedByNull)
     else
       Gimmick.PowerCutOff(connectPowerCutAreaTable)
     end
   end
 end
-function this.SetHeroicAndOrgPoint(gimmickId,e)
-  if e==NULL_ID then
+
+function this.SetHeroicAndOrgPoint(gimmickId,gameObjectId)
+  if gameObjectId==NULL_ID then
     return
   end
   local gimmickType=mvars.gim_identifierParamTable[gimmickId].gimmickType
@@ -737,6 +825,7 @@ function this.SetHeroicAndOrgPoint(gimmickId,e)
   end
   TppHero.AnnounceBreakGimmickByGimmickType(gimmickType)
 end
+
 function this.EnableCollectionTable(collectionNames,enable,force)
   local showFlag=0
   if not enable then
@@ -764,10 +853,12 @@ function this.EnableCollectionTable(collectionNames,enable,force)
     end
   end
 end
+
 function this.DEBUG_DumpIdentiferParam(n,e)
   if e then
   end
 end
+
 function this.InitQuest()
   mvars.gim_questTargetList={}
   mvars.gim_isQuestSetup=false
@@ -779,6 +870,7 @@ function this.InitQuest()
   mvars.gim_questMarkCount=0
   mvars.gim_questMarkTotalCount=0
 end
+
 function this.OnAllocateQuest(questTable)
   if questTable==nil then
     return
@@ -786,6 +878,7 @@ function this.OnAllocateQuest(questTable)
   if mvars.gim_isQuestSetup==false then
   end
 end
+
 function this.OnActivateQuest(questTable)
   if questTable==nil then
     return
@@ -853,6 +946,7 @@ function this.OnActivateQuest(questTable)
     mvars.gim_isQuestSetup=true
   end
 end
+
 function this.OnDeactivateQuest(questTable)
   if mvars.gim_isQuestSetup==true then
     local clearType=this.CheckQuestAllTarget(questTable.questType,nil,true)
@@ -860,11 +954,13 @@ function this.OnDeactivateQuest(questTable)
     this.SetQuestInvisibleGimmick(0,true,true)
   end
 end
+
 function this.OnTerminateQuest(questTable)
   if mvars.gim_isQuestSetup==true then
     this.InitQuest()
   end
 end
+
 --NMC: gimmickIdentifier = gameId, or collectionUniqueId or
 function this.CheckQuestAllTarget(questType,gimmickIdentifier,targetPracticeTimeOut)
   local clearType=TppDefine.QUEST_CLEAR_TYPE.NONE
@@ -955,6 +1051,7 @@ function this.CheckQuestAllTarget(questType,gimmickIdentifier,targetPracticeTime
   end
   return clearType
 end
+
 function this.IsQuestTarget(checkId)
   if mvars.gim_isQuestSetup==false then
     return false
@@ -972,6 +1069,7 @@ function this.IsQuestTarget(checkId)
   end
   return false
 end
+
 function this.SetQuestInvisibleGimmick(questMarkSetIndex,setInvisible,skipCheck)
   local force=skipCheck or false
   for i,targetInfo in pairs(mvars.gim_questTargetList)do
@@ -980,12 +1078,14 @@ function this.SetQuestInvisibleGimmick(questMarkSetIndex,setInvisible,skipCheck)
     end
   end
 end
+
 function this.SetQuestSootingTargetInvincible(setInvincible)--GOTCHA: invinvible not invisible
   for i,targetInfo in pairs(mvars.gim_questTargetList)do
     Gimmick.InvincibleGimmickData(TppGameObject.GAME_OBJECT_TYPE_IMPORTANT_BREAKABLE,"mtbs_bord001_vrtn003_ev_gim_i0000|TppPermanentGimmick_mtbs_bord001_vrtn003_ev",targetInfo.dataSetName,setInvincible)
     break--NMC tex wut. mtbs_bord001_vrtn003_ev_gim_i0000 is the instance rather than specific target, but they still need the datasetname, they could have just used mvars.gim_questTargetList[1].dataSetName?
   end
 end
+
 --NMC no references
 function this.IsQuestStartSwitchGimmick(locatorS32)
   if locatorS32==mvars.gim_questMarkStartName then
@@ -993,13 +1093,16 @@ function this.IsQuestStartSwitchGimmick(locatorS32)
   end
   return false
 end
+
 function this.StartQuestShootingPractice()
   this.SetQuestInvisibleGimmick(mvars.gim_questMarkSetIndex,false,false)
   mvars.gim_isquestMarkStart=true
 end
+
 function this.SetQuestShootingPracticeTargetInvisible()
   this.SetQuestInvisibleGimmick(mvars.gim_questMarkSetIndex,true,true)
 end
+
 function this.EndQuestShootingPractice(questClearType)
   if questClearType==TppDefine.QUEST_CLEAR_TYPE.SHOOTING_RETRY then
     mvars.gim_isquestMarkStart=false
@@ -1009,12 +1112,15 @@ function this.EndQuestShootingPractice(questClearType)
     mvars.gim_questMarkCount=0
   end
 end
+
 function this.IsStartQuestShootingPractice()
   return mvars.gim_isquestMarkStart
 end
+
 function this.GetQuestShootingPracticeCount()
   return mvars.gim_questMarkCount,mvars.gim_questMarkTotalCount
 end
+
 function this.SetUpMineQuest(questmineTotalCount)
   if mvars.gim_isQuestSetup==false then
     mvars.gim_questmineCount=0
@@ -1022,6 +1128,7 @@ function this.SetUpMineQuest(questmineTotalCount)
     mvars.gim_isQuestSetup=true
   end
 end
+
 function this.OnTerminateMineQuest()
   if mvars.gim_isQuestSetup==true then
     mvars.gim_questmineCount=0
@@ -1029,6 +1136,7 @@ function this.OnTerminateMineQuest()
     mvars.gim_isQuestSetup=false
   end
 end
+
 function this.CheckQuestPlaced(mineEquipId,index)
   if this.CheckQuestMine(mineEquipId,index)then
     mvars.gim_questmineCount=mvars.gim_questmineCount+1
@@ -1040,6 +1148,7 @@ function this.CheckQuestPlaced(mineEquipId,index)
     return false
   end
 end
+
 function this.CheckQuestMine(mineEquipId,index)
   for i,equipId in pairs(TppDefine.QUEST_MINE_TYPE_LIST)do
     if mineEquipId==equipId then
@@ -1052,4 +1161,5 @@ function this.CheckQuestMine(mineEquipId,index)
   end
   return false
 end
+
 return this
